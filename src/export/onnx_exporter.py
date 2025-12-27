@@ -19,7 +19,7 @@ class ONNXExporter:
 
     def export(self, save_path, opset_version=14):
         """
-        导出为 ONNX 格式
+        导出为 ONNX 格式（单张图片输入）
 
         Args:
             save_path: 保存路径
@@ -30,15 +30,16 @@ class ONNXExporter:
         """
         print(f"\n导出 ONNX 模型到: {save_path}")
         print(f"Opset 版本: {opset_version}")
+        print(f"输入模式: 单张图片 (batch_size=1)")
 
         # 设置为评估模式
         self.model.eval()
         self.model.cpu()  # 导出时使用CPU
 
-        # 创建虚拟输入
+        # 创建虚拟输入 (batch_size=1, channels=3, height=img_size, width=img_size)
         dummy_input = torch.randn(1, 3, self.img_size, self.img_size)
 
-        # 导出
+        # 导出 (固定 batch_size=1，每次只处理一张图片)
         print("正在导出...")
         torch.onnx.export(
             self.model,
@@ -47,10 +48,7 @@ class ONNXExporter:
             opset_version=opset_version,
             input_names=['input'],
             output_names=['output'],
-            dynamic_axes={
-                'input': {0: 'batch_size'},
-                'output': {0: 'batch_size'}
-            },
+            # 移除 dynamic_axes，固定 batch_size=1
             export_params=True,
             do_constant_folding=True
         )
@@ -120,8 +118,9 @@ class ONNXExporter:
         print("\nONNX 模型信息:")
         print(f"  文件大小: {file_size:.2f} MB")
         print(f"  输入名称: {input_info.name}")
-        print(f"  输入形状: {input_info.shape}")
+        print(f"  输入形状: {input_info.shape} (固定为单张图片)")
         print(f"  输入类型: {input_info.type}")
         print(f"  输出名称: {output_info.name}")
-        print(f"  输出形状: {output_info.shape}")
+        print(f"  输出形状: {output_info.shape} (batch_size=1)")
         print(f"  输出类型: {output_info.type}")
+        print(f"\n  使用说明: 此模型每次只接受一张图片输入")
