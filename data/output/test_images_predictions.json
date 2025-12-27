@@ -1,0 +1,2477 @@
+{
+  "load065.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9526155591011047,
+    "probabilities": {
+      "Failure": 0.01468568854033947,
+      "Loading": 0.9526155591011047,
+      "Success": 0.032698698341846466
+    }
+  },
+  "load059.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.841535210609436,
+    "probabilities": {
+      "Failure": 0.11716626584529877,
+      "Loading": 0.841535210609436,
+      "Success": 0.041298530995845795
+    }
+  },
+  "success019.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.43915191292762756,
+    "probabilities": {
+      "Failure": 0.1332777589559555,
+      "Loading": 0.4275703430175781,
+      "Success": 0.43915191292762756
+    }
+  },
+  "success031.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9179064035415649,
+    "probabilities": {
+      "Failure": 0.040152691304683685,
+      "Loading": 0.041940897703170776,
+      "Success": 0.9179064035415649
+    }
+  },
+  "success025.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9669356942176819,
+    "probabilities": {
+      "Failure": 0.017127808183431625,
+      "Loading": 0.015936456620693207,
+      "Success": 0.9669356942176819
+    }
+  },
+  "fail082.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9858497977256775,
+    "probabilities": {
+      "Failure": 0.9858497977256775,
+      "Loading": 0.009076886810362339,
+      "Success": 0.005073301959782839
+    }
+  },
+  "fail055.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.8082926869392395,
+    "probabilities": {
+      "Failure": 0.8082926869392395,
+      "Loading": 0.07889623194932938,
+      "Success": 0.11281108111143112
+    }
+  },
+  "fail041.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9897322058677673,
+    "probabilities": {
+      "Failure": 0.9897322058677673,
+      "Loading": 0.005100499372929335,
+      "Success": 0.005167241673916578
+    }
+  },
+  "fail069.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9897322058677673,
+    "probabilities": {
+      "Failure": 0.9897322058677673,
+      "Loading": 0.005100499372929335,
+      "Success": 0.005167241673916578
+    }
+  },
+  "fail068.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9897322058677673,
+    "probabilities": {
+      "Failure": 0.9897322058677673,
+      "Loading": 0.005100499372929335,
+      "Success": 0.005167241673916578
+    }
+  },
+  "fail040.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9889234900474548,
+    "probabilities": {
+      "Failure": 0.9889234900474548,
+      "Loading": 0.005179631989449263,
+      "Success": 0.005896780174225569
+    }
+  },
+  "fail054.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.7542480230331421,
+    "probabilities": {
+      "Failure": 0.7542480230331421,
+      "Loading": 0.11914579570293427,
+      "Success": 0.12660616636276245
+    }
+  },
+  "fail083.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.8242220282554626,
+    "probabilities": {
+      "Failure": 0.8242220282554626,
+      "Loading": 0.14500075578689575,
+      "Success": 0.030777156352996826
+    }
+  },
+  "success024.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.958294689655304,
+    "probabilities": {
+      "Failure": 0.020652901381254196,
+      "Loading": 0.021052440628409386,
+      "Success": 0.958294689655304
+    }
+  },
+  "success030.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9172773957252502,
+    "probabilities": {
+      "Failure": 0.040084414184093475,
+      "Loading": 0.0426381416618824,
+      "Success": 0.9172773957252502
+    }
+  },
+  "success018.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.5717018246650696,
+    "probabilities": {
+      "Failure": 0.33949318528175354,
+      "Loading": 0.08880496770143509,
+      "Success": 0.5717018246650696
+    }
+  },
+  "load058.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.964769721031189,
+    "probabilities": {
+      "Failure": 0.02041321061551571,
+      "Loading": 0.964769721031189,
+      "Success": 0.014817059971392155
+    }
+  },
+  "load064.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.94288170337677,
+    "probabilities": {
+      "Failure": 0.024259814992547035,
+      "Loading": 0.94288170337677,
+      "Success": 0.03285854309797287
+    }
+  },
+  "load066.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9803082942962646,
+    "probabilities": {
+      "Failure": 0.005006382241845131,
+      "Loading": 0.9803082942962646,
+      "Success": 0.014685284346342087
+    }
+  },
+  "success026.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9182595014572144,
+    "probabilities": {
+      "Failure": 0.04447003826498985,
+      "Loading": 0.03727049008011818,
+      "Success": 0.9182595014572144
+    }
+  },
+  "success032.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9027820825576782,
+    "probabilities": {
+      "Failure": 0.050992049276828766,
+      "Loading": 0.04622584581375122,
+      "Success": 0.9027820825576782
+    }
+  },
+  "fail081.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9897426962852478,
+    "probabilities": {
+      "Failure": 0.9897426962852478,
+      "Loading": 0.004807207267731428,
+      "Success": 0.005450088530778885
+    }
+  },
+  "fail042.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9735797047615051,
+    "probabilities": {
+      "Failure": 0.9735797047615051,
+      "Loading": 0.009846656583249569,
+      "Success": 0.016573691740632057
+    }
+  },
+  "fail056.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.7249577641487122,
+    "probabilities": {
+      "Failure": 0.2148045301437378,
+      "Loading": 0.7249577641487122,
+      "Success": 0.060237664729356766
+    }
+  },
+  "fail057.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.8044601678848267,
+    "probabilities": {
+      "Failure": 0.8044601678848267,
+      "Loading": 0.07471396774053574,
+      "Success": 0.1208258718252182
+    }
+  },
+  "fail043.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9584192037582397,
+    "probabilities": {
+      "Failure": 0.9584192037582397,
+      "Loading": 0.010019836947321892,
+      "Success": 0.031561024487018585
+    }
+  },
+  "fail094.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.8513378500938416,
+    "probabilities": {
+      "Failure": 0.8513378500938416,
+      "Loading": 0.11383724212646484,
+      "Success": 0.03482484817504883
+    }
+  },
+  "fail080.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9897322058677673,
+    "probabilities": {
+      "Failure": 0.9897322058677673,
+      "Loading": 0.005100499372929335,
+      "Success": 0.005167241673916578
+    }
+  },
+  "success033.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9349951148033142,
+    "probabilities": {
+      "Failure": 0.03805974870920181,
+      "Loading": 0.02694518491625786,
+      "Success": 0.9349951148033142
+    }
+  },
+  "success027.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9559083580970764,
+    "probabilities": {
+      "Failure": 0.021975278854370117,
+      "Loading": 0.022116368636488914,
+      "Success": 0.9559083580970764
+    }
+  },
+  "load067.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.6039589643478394,
+    "probabilities": {
+      "Failure": 0.22220030426979065,
+      "Loading": 0.6039589643478394,
+      "Success": 0.17384082078933716
+    }
+  },
+  "load063.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9738546013832092,
+    "probabilities": {
+      "Failure": 0.009793682023882866,
+      "Loading": 0.9738546013832092,
+      "Success": 0.016351746395230293
+    }
+  },
+  "success023.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9600266218185425,
+    "probabilities": {
+      "Failure": 0.019530903548002243,
+      "Loading": 0.020442407578229904,
+      "Success": 0.9600266218185425
+    }
+  },
+  "success037.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9771814346313477,
+    "probabilities": {
+      "Failure": 0.009556981734931469,
+      "Loading": 0.013261571526527405,
+      "Success": 0.9771814346313477
+    }
+  },
+  "Screenshot_9.png": {
+    "predicted_class": "Success",
+    "confidence": 0.9869484901428223,
+    "probabilities": {
+      "Failure": 0.00554327666759491,
+      "Loading": 0.007508257403969765,
+      "Success": 0.9869484901428223
+    }
+  },
+  "fail084.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9858497977256775,
+    "probabilities": {
+      "Failure": 0.9858497977256775,
+      "Loading": 0.009076886810362339,
+      "Success": 0.005073301959782839
+    }
+  },
+  "fail090.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9735797047615051,
+    "probabilities": {
+      "Failure": 0.9735797047615051,
+      "Loading": 0.009846656583249569,
+      "Success": 0.016573691740632057
+    }
+  },
+  "fail047.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9735797047615051,
+    "probabilities": {
+      "Failure": 0.9735797047615051,
+      "Loading": 0.009846656583249569,
+      "Success": 0.016573691740632057
+    }
+  },
+  "fail053.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9735797047615051,
+    "probabilities": {
+      "Failure": 0.9735797047615051,
+      "Loading": 0.009846656583249569,
+      "Success": 0.016573691740632057
+    }
+  },
+  "fail052.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9858497977256775,
+    "probabilities": {
+      "Failure": 0.9858497977256775,
+      "Loading": 0.009076886810362339,
+      "Success": 0.005073301959782839
+    }
+  },
+  "fail046.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9902685880661011,
+    "probabilities": {
+      "Failure": 0.9902685880661011,
+      "Loading": 0.004468756262212992,
+      "Success": 0.005262584891170263
+    }
+  },
+  "fail091.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9735797047615051,
+    "probabilities": {
+      "Failure": 0.9735797047615051,
+      "Loading": 0.009846656583249569,
+      "Success": 0.016573691740632057
+    }
+  },
+  "fail085.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9858497977256775,
+    "probabilities": {
+      "Failure": 0.9858497977256775,
+      "Loading": 0.009076886810362339,
+      "Success": 0.005073301959782839
+    }
+  },
+  "Screenshot_8.png": {
+    "predicted_class": "Success",
+    "confidence": 0.9928616881370544,
+    "probabilities": {
+      "Failure": 0.003639208385720849,
+      "Loading": 0.0034990967251360416,
+      "Success": 0.9928616881370544
+    }
+  },
+  "success036.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9560391902923584,
+    "probabilities": {
+      "Failure": 0.008108526468276978,
+      "Loading": 0.03585230931639671,
+      "Success": 0.9560391902923584
+    }
+  },
+  "success022.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9107635617256165,
+    "probabilities": {
+      "Failure": 0.018126675859093666,
+      "Loading": 0.07110975682735443,
+      "Success": 0.9107635617256165
+    }
+  },
+  "load062.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.989801824092865,
+    "probabilities": {
+      "Failure": 0.002931093331426382,
+      "Loading": 0.989801824092865,
+      "Success": 0.007267100270837545
+    }
+  },
+  "load048.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9877390265464783,
+    "probabilities": {
+      "Failure": 0.006843531504273415,
+      "Loading": 0.9877390265464783,
+      "Success": 0.0054174005053937435
+    }
+  },
+  "load060.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9162524342536926,
+    "probabilities": {
+      "Failure": 0.05475955083966255,
+      "Loading": 0.9162524342536926,
+      "Success": 0.0289880633354187
+    }
+  },
+  "success034.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9258408546447754,
+    "probabilities": {
+      "Failure": 0.03668911010026932,
+      "Loading": 0.03746996447443962,
+      "Success": 0.9258408546447754
+    }
+  },
+  "success020.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.8741786479949951,
+    "probabilities": {
+      "Failure": 0.04513178765773773,
+      "Loading": 0.08068951219320297,
+      "Success": 0.8741786479949951
+    }
+  },
+  "success008.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9457996487617493,
+    "probabilities": {
+      "Failure": 0.020669305697083473,
+      "Loading": 0.033531010150909424,
+      "Success": 0.9457996487617493
+    }
+  },
+  "fail093.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.8242220282554626,
+    "probabilities": {
+      "Failure": 0.8242220282554626,
+      "Loading": 0.14500075578689575,
+      "Success": 0.030777156352996826
+    }
+  },
+  "fail087.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.876465380191803,
+    "probabilities": {
+      "Failure": 0.876465380191803,
+      "Loading": 0.054499268531799316,
+      "Success": 0.06903532892465591
+    }
+  },
+  "fail078.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9897322058677673,
+    "probabilities": {
+      "Failure": 0.9897322058677673,
+      "Loading": 0.005100499372929335,
+      "Success": 0.005167241673916578
+    }
+  },
+  "fail050.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9735797047615051,
+    "probabilities": {
+      "Failure": 0.9735797047615051,
+      "Loading": 0.009846656583249569,
+      "Success": 0.016573691740632057
+    }
+  },
+  "fail044.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9735797047615051,
+    "probabilities": {
+      "Failure": 0.9735797047615051,
+      "Loading": 0.009846656583249569,
+      "Success": 0.016573691740632057
+    }
+  },
+  "fail045.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9735797047615051,
+    "probabilities": {
+      "Failure": 0.9735797047615051,
+      "Loading": 0.009846656583249569,
+      "Success": 0.016573691740632057
+    }
+  },
+  "fail051.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.8342330455780029,
+    "probabilities": {
+      "Failure": 0.8342330455780029,
+      "Loading": 0.07726560533046722,
+      "Success": 0.08850140124559402
+    }
+  },
+  "fail079.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9895445704460144,
+    "probabilities": {
+      "Failure": 0.9895445704460144,
+      "Loading": 0.004444584250450134,
+      "Success": 0.006010763812810183
+    }
+  },
+  "fail086.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.8387696146965027,
+    "probabilities": {
+      "Failure": 0.8387696146965027,
+      "Loading": 0.08673194795846939,
+      "Success": 0.07449844479560852
+    }
+  },
+  "fail092.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9897966980934143,
+    "probabilities": {
+      "Failure": 0.9897966980934143,
+      "Loading": 0.004805595148354769,
+      "Success": 0.005397683475166559
+    }
+  },
+  "success009.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9460597634315491,
+    "probabilities": {
+      "Failure": 0.02062091790139675,
+      "Loading": 0.033319372683763504,
+      "Success": 0.9460597634315491
+    }
+  },
+  "success021.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9771814346313477,
+    "probabilities": {
+      "Failure": 0.009556981734931469,
+      "Loading": 0.013261571526527405,
+      "Success": 0.9771814346313477
+    }
+  },
+  "success035.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9576167464256287,
+    "probabilities": {
+      "Failure": 0.021717168390750885,
+      "Loading": 0.020666057243943214,
+      "Success": 0.9576167464256287
+    }
+  },
+  "load061.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9710264205932617,
+    "probabilities": {
+      "Failure": 0.021074652671813965,
+      "Loading": 0.9710264205932617,
+      "Success": 0.007898925803601742
+    }
+  },
+  "load049.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9877390265464783,
+    "probabilities": {
+      "Failure": 0.006843531504273415,
+      "Loading": 0.9877390265464783,
+      "Success": 0.0054174005053937435
+    }
+  },
+  "load012.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9632980823516846,
+    "probabilities": {
+      "Failure": 0.027272524312138557,
+      "Loading": 0.9632980823516846,
+      "Success": 0.009429339319467545
+    }
+  },
+  "load006.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9339300990104675,
+    "probabilities": {
+      "Failure": 0.046227943152189255,
+      "Loading": 0.9339300990104675,
+      "Success": 0.019841963425278664
+    }
+  },
+  "Screenshot_15.png": {
+    "predicted_class": "Success",
+    "confidence": 0.9849788546562195,
+    "probabilities": {
+      "Failure": 0.006054231431335211,
+      "Loading": 0.008966871537268162,
+      "Success": 0.9849788546562195
+    }
+  },
+  "success052.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9460597634315491,
+    "probabilities": {
+      "Failure": 0.02062091790139675,
+      "Loading": 0.033319372683763504,
+      "Success": 0.9460597634315491
+    }
+  },
+  "success046.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9610167741775513,
+    "probabilities": {
+      "Failure": 0.025736119598150253,
+      "Loading": 0.9610167741775513,
+      "Success": 0.013247113674879074
+    }
+  },
+  "success091.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9668033123016357,
+    "probabilities": {
+      "Failure": 0.014284387230873108,
+      "Loading": 0.018912257626652718,
+      "Success": 0.9668033123016357
+    }
+  },
+  "success085.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9701750874519348,
+    "probabilities": {
+      "Failure": 0.010280512273311615,
+      "Loading": 0.01954450085759163,
+      "Success": 0.9701750874519348
+    }
+  },
+  "fail036.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9097087383270264,
+    "probabilities": {
+      "Failure": 0.9097087383270264,
+      "Loading": 0.04332748427987099,
+      "Success": 0.04696379229426384
+    }
+  },
+  "fail022.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9097087383270264,
+    "probabilities": {
+      "Failure": 0.9097087383270264,
+      "Loading": 0.04332748427987099,
+      "Success": 0.04696379229426384
+    }
+  },
+  "fail023.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9853015542030334,
+    "probabilities": {
+      "Failure": 0.9853015542030334,
+      "Loading": 0.007782351225614548,
+      "Success": 0.006916121579706669
+    }
+  },
+  "fail037.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9097087383270264,
+    "probabilities": {
+      "Failure": 0.9097087383270264,
+      "Loading": 0.04332748427987099,
+      "Success": 0.04696379229426384
+    }
+  },
+  "success084.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9707170724868774,
+    "probabilities": {
+      "Failure": 0.012079627253115177,
+      "Loading": 0.01720324531197548,
+      "Success": 0.9707170724868774
+    }
+  },
+  "success090.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9733205437660217,
+    "probabilities": {
+      "Failure": 0.008640206418931484,
+      "Loading": 0.018039187416434288,
+      "Success": 0.9733205437660217
+    }
+  },
+  "success047.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9466084241867065,
+    "probabilities": {
+      "Failure": 0.020015213638544083,
+      "Loading": 0.033376336097717285,
+      "Success": 0.9466084241867065
+    }
+  },
+  "success053.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9617533683776855,
+    "probabilities": {
+      "Failure": 0.019021226093173027,
+      "Loading": 0.019225383177399635,
+      "Success": 0.9617533683776855
+    }
+  },
+  "Screenshot_14.png": {
+    "predicted_class": "Success",
+    "confidence": 0.9803189635276794,
+    "probabilities": {
+      "Failure": 0.006326391361653805,
+      "Loading": 0.01335466280579567,
+      "Success": 0.9803189635276794
+    }
+  },
+  "load007.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9489759802818298,
+    "probabilities": {
+      "Failure": 0.02197006344795227,
+      "Loading": 0.9489759802818298,
+      "Success": 0.02905391715466976
+    }
+  },
+  "load013.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9131665229797363,
+    "probabilities": {
+      "Failure": 0.02001887932419777,
+      "Loading": 0.9131665229797363,
+      "Success": 0.06681458652019501
+    }
+  },
+  "load005.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9813340306282043,
+    "probabilities": {
+      "Failure": 0.009028943255543709,
+      "Loading": 0.9813340306282043,
+      "Success": 0.009637047536671162
+    }
+  },
+  "load011.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9304577708244324,
+    "probabilities": {
+      "Failure": 0.04133037477731705,
+      "Loading": 0.9304577708244324,
+      "Success": 0.02821182832121849
+    }
+  },
+  "load039.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.91652512550354,
+    "probabilities": {
+      "Failure": 0.061639346182346344,
+      "Loading": 0.91652512550354,
+      "Success": 0.02183552086353302
+    }
+  },
+  "Screenshot_16.png": {
+    "predicted_class": "Success",
+    "confidence": 0.9907371401786804,
+    "probabilities": {
+      "Failure": 0.002079586498439312,
+      "Loading": 0.007183318957686424,
+      "Success": 0.9907371401786804
+    }
+  },
+  "success079.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9297412633895874,
+    "probabilities": {
+      "Failure": 0.0380626916885376,
+      "Loading": 0.032196156680583954,
+      "Success": 0.9297412633895874
+    }
+  },
+  "success045.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9632180333137512,
+    "probabilities": {
+      "Failure": 0.019180135801434517,
+      "Loading": 0.017601756379008293,
+      "Success": 0.9632180333137512
+    }
+  },
+  "success051.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9460794925689697,
+    "probabilities": {
+      "Failure": 0.020250150933861732,
+      "Loading": 0.03367035463452339,
+      "Success": 0.9460794925689697
+    }
+  },
+  "success086.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9712183475494385,
+    "probabilities": {
+      "Failure": 0.009632817469537258,
+      "Loading": 0.019148744642734528,
+      "Success": 0.9712183475494385
+    }
+  },
+  "success092.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9563804268836975,
+    "probabilities": {
+      "Failure": 0.012337003834545612,
+      "Loading": 0.03128259629011154,
+      "Success": 0.9563804268836975
+    }
+  },
+  "fail021.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9853015542030334,
+    "probabilities": {
+      "Failure": 0.9853015542030334,
+      "Loading": 0.007782351225614548,
+      "Success": 0.006916121579706669
+    }
+  },
+  "fail035.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9099196195602417,
+    "probabilities": {
+      "Failure": 0.9099196195602417,
+      "Loading": 0.04489544779062271,
+      "Success": 0.04518497735261917
+    }
+  },
+  "fail009.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9895445704460144,
+    "probabilities": {
+      "Failure": 0.9895445704460144,
+      "Loading": 0.004444584250450134,
+      "Success": 0.006010763812810183
+    }
+  },
+  "fail008.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9301844239234924,
+    "probabilities": {
+      "Failure": 0.9301844239234924,
+      "Loading": 0.019329993054270744,
+      "Success": 0.05048558488488197
+    }
+  },
+  "fail034.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.8513378500938416,
+    "probabilities": {
+      "Failure": 0.8513378500938416,
+      "Loading": 0.11383724212646484,
+      "Success": 0.03482484817504883
+    }
+  },
+  "fail020.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.7939835786819458,
+    "probabilities": {
+      "Failure": 0.07776114344596863,
+      "Loading": 0.7939835786819458,
+      "Success": 0.12825530767440796
+    }
+  },
+  "success087.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9794639348983765,
+    "probabilities": {
+      "Failure": 0.0057147485204041,
+      "Loading": 0.014821317046880722,
+      "Success": 0.9794639348983765
+    }
+  },
+  "success050.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9457996487617493,
+    "probabilities": {
+      "Failure": 0.020669305697083473,
+      "Loading": 0.033531010150909424,
+      "Success": 0.9457996487617493
+    }
+  },
+  "success044.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9632180333137512,
+    "probabilities": {
+      "Failure": 0.019180135801434517,
+      "Loading": 0.017601756379008293,
+      "Success": 0.9632180333137512
+    }
+  },
+  "success078.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.946631908416748,
+    "probabilities": {
+      "Failure": 0.02037106826901436,
+      "Loading": 0.032997023314237595,
+      "Success": 0.946631908416748
+    }
+  },
+  "Screenshot_17.png": {
+    "predicted_class": "Success",
+    "confidence": 0.8018529415130615,
+    "probabilities": {
+      "Failure": 0.0875149592757225,
+      "Loading": 0.11063210666179657,
+      "Success": 0.8018529415130615
+    }
+  },
+  "load038.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9665356278419495,
+    "probabilities": {
+      "Failure": 0.01962891034781933,
+      "Loading": 0.9665356278419495,
+      "Success": 0.013835492543876171
+    }
+  },
+  "load010.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.96734219789505,
+    "probabilities": {
+      "Failure": 0.025032594799995422,
+      "Loading": 0.96734219789505,
+      "Success": 0.007625232450664043
+    }
+  },
+  "load004.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9045571684837341,
+    "probabilities": {
+      "Failure": 0.02208593860268593,
+      "Loading": 0.07335688173770905,
+      "Success": 0.9045571684837341
+    }
+  },
+  "load028.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.882190465927124,
+    "probabilities": {
+      "Failure": 0.09346737712621689,
+      "Loading": 0.882190465927124,
+      "Success": 0.024342169985175133
+    }
+  },
+  "load000.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9820687174797058,
+    "probabilities": {
+      "Failure": 0.006782153621315956,
+      "Loading": 0.9820687174797058,
+      "Success": 0.011149105615913868
+    }
+  },
+  "load014.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9782974123954773,
+    "probabilities": {
+      "Failure": 0.007030808366835117,
+      "Loading": 0.9782974123954773,
+      "Success": 0.014671703800559044
+    }
+  },
+  "Screenshot_13.png": {
+    "predicted_class": "Success",
+    "confidence": 0.9615578055381775,
+    "probabilities": {
+      "Failure": 0.00553810503333807,
+      "Loading": 0.03290410712361336,
+      "Success": 0.9615578055381775
+    }
+  },
+  "success040.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9460723996162415,
+    "probabilities": {
+      "Failure": 0.020651008933782578,
+      "Loading": 0.03327656909823418,
+      "Success": 0.9460723996162415
+    }
+  },
+  "success054.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9153627157211304,
+    "probabilities": {
+      "Failure": 0.041582126170396805,
+      "Loading": 0.04305517300963402,
+      "Success": 0.9153627157211304
+    }
+  },
+  "success068.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.980422854423523,
+    "probabilities": {
+      "Failure": 0.014469658955931664,
+      "Loading": 0.005107413977384567,
+      "Success": 0.980422854423523
+    }
+  },
+  "success083.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9707170724868774,
+    "probabilities": {
+      "Failure": 0.012079627253115177,
+      "Loading": 0.01720324531197548,
+      "Success": 0.9707170724868774
+    }
+  },
+  "fail018.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.8192272186279297,
+    "probabilities": {
+      "Failure": 0.8192272186279297,
+      "Loading": 0.12282832711935043,
+      "Success": 0.057944539934396744
+    }
+  },
+  "fail024.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9735797047615051,
+    "probabilities": {
+      "Failure": 0.9735797047615051,
+      "Loading": 0.009846656583249569,
+      "Success": 0.016573691740632057
+    }
+  },
+  "fail030.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.8387696146965027,
+    "probabilities": {
+      "Failure": 0.8387696146965027,
+      "Loading": 0.08673194795846939,
+      "Success": 0.07449844479560852
+    }
+  },
+  "fail031.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.876465380191803,
+    "probabilities": {
+      "Failure": 0.876465380191803,
+      "Loading": 0.054499268531799316,
+      "Success": 0.06903532892465591
+    }
+  },
+  "fail025.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9735797047615051,
+    "probabilities": {
+      "Failure": 0.9735797047615051,
+      "Loading": 0.009846656583249569,
+      "Success": 0.016573691740632057
+    }
+  },
+  "fail019.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.8930907249450684,
+    "probabilities": {
+      "Failure": 0.8930907249450684,
+      "Loading": 0.08441613614559174,
+      "Success": 0.022493215277791023
+    }
+  },
+  "success082.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9298847913742065,
+    "probabilities": {
+      "Failure": 0.0380161888897419,
+      "Loading": 0.032099004834890366,
+      "Success": 0.9298847913742065
+    }
+  },
+  "success069.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9830420017242432,
+    "probabilities": {
+      "Failure": 0.010081946849822998,
+      "Loading": 0.00687607703730464,
+      "Success": 0.9830420017242432
+    }
+  },
+  "success055.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9576199650764465,
+    "probabilities": {
+      "Failure": 0.021196819841861725,
+      "Loading": 0.02118322066962719,
+      "Success": 0.9576199650764465
+    }
+  },
+  "success041.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9429894685745239,
+    "probabilities": {
+      "Failure": 0.020342161878943443,
+      "Loading": 0.03666834160685539,
+      "Success": 0.9429894685745239
+    }
+  },
+  "Screenshot_12.png": {
+    "predicted_class": "Success",
+    "confidence": 0.8961558938026428,
+    "probabilities": {
+      "Failure": 0.04307650402188301,
+      "Loading": 0.06076768413186073,
+      "Success": 0.8961558938026428
+    }
+  },
+  "load015.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9781047701835632,
+    "probabilities": {
+      "Failure": 0.007316952105611563,
+      "Loading": 0.9781047701835632,
+      "Success": 0.014578292146325111
+    }
+  },
+  "load001.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.46742281317710876,
+    "probabilities": {
+      "Failure": 0.1660386323928833,
+      "Loading": 0.46742281317710876,
+      "Success": 0.3665386140346527
+    }
+  },
+  "load029.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9796745181083679,
+    "probabilities": {
+      "Failure": 0.015552765689790249,
+      "Loading": 0.9796745181083679,
+      "Success": 0.004772731103003025
+    }
+  },
+  "load017.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.5454121828079224,
+    "probabilities": {
+      "Failure": 0.4125392436981201,
+      "Loading": 0.5454121828079224,
+      "Success": 0.04204865172505379
+    }
+  },
+  "load003.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9610167741775513,
+    "probabilities": {
+      "Failure": 0.025736119598150253,
+      "Loading": 0.9610167741775513,
+      "Success": 0.013247113674879074
+    }
+  },
+  "Screenshot_10.png": {
+    "predicted_class": "Success",
+    "confidence": 0.9712239503860474,
+    "probabilities": {
+      "Failure": 0.006506686098873615,
+      "Loading": 0.022269414737820625,
+      "Success": 0.9712239503860474
+    }
+  },
+  "success057.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9027820825576782,
+    "probabilities": {
+      "Failure": 0.050992049276828766,
+      "Loading": 0.04622584581375122,
+      "Success": 0.9027820825576782
+    }
+  },
+  "success043.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9429894685745239,
+    "probabilities": {
+      "Failure": 0.020342161878943443,
+      "Loading": 0.03666834160685539,
+      "Success": 0.9429894685745239
+    }
+  },
+  "success080.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9298017024993896,
+    "probabilities": {
+      "Failure": 0.03800646960735321,
+      "Loading": 0.03219173476099968,
+      "Success": 0.9298017024993896
+    }
+  },
+  "fail033.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9288387894630432,
+    "probabilities": {
+      "Failure": 0.9288387894630432,
+      "Loading": 0.03800905868411064,
+      "Success": 0.03315211459994316
+    }
+  },
+  "fail027.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9897966980934143,
+    "probabilities": {
+      "Failure": 0.9897966980934143,
+      "Loading": 0.004805595148354769,
+      "Success": 0.005397683475166559
+    }
+  },
+  "fail026.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9735797047615051,
+    "probabilities": {
+      "Failure": 0.9735797047615051,
+      "Loading": 0.009846656583249569,
+      "Success": 0.016573691740632057
+    }
+  },
+  "fail032.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.8242220282554626,
+    "probabilities": {
+      "Failure": 0.8242220282554626,
+      "Loading": 0.14500075578689575,
+      "Success": 0.030777156352996826
+    }
+  },
+  "success081.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9297413229942322,
+    "probabilities": {
+      "Failure": 0.03808815777301788,
+      "Loading": 0.03217048570513725,
+      "Success": 0.9297413229942322
+    }
+  },
+  "success042.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9429894685745239,
+    "probabilities": {
+      "Failure": 0.020342161878943443,
+      "Loading": 0.03666834160685539,
+      "Success": 0.9429894685745239
+    }
+  },
+  "success056.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9179064035415649,
+    "probabilities": {
+      "Failure": 0.040152691304683685,
+      "Loading": 0.041940897703170776,
+      "Success": 0.9179064035415649
+    }
+  },
+  "Screenshot_11.png": {
+    "predicted_class": "Success",
+    "confidence": 0.9834889769554138,
+    "probabilities": {
+      "Failure": 0.006359654478728771,
+      "Loading": 0.01015141885727644,
+      "Success": 0.9834889769554138
+    }
+  },
+  "load002.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.848408043384552,
+    "probabilities": {
+      "Failure": 0.039624255150556564,
+      "Loading": 0.11196772754192352,
+      "Success": 0.848408043384552
+    }
+  },
+  "load016.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.977910041809082,
+    "probabilities": {
+      "Failure": 0.007574664894491434,
+      "Loading": 0.977910041809082,
+      "Success": 0.014515353366732597
+    }
+  },
+  "load033.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9245458841323853,
+    "probabilities": {
+      "Failure": 0.04862269386649132,
+      "Loading": 0.9245458841323853,
+      "Success": 0.026831477880477905
+    }
+  },
+  "load027.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9900521636009216,
+    "probabilities": {
+      "Failure": 0.004410095512866974,
+      "Loading": 0.9900521636009216,
+      "Success": 0.005537759512662888
+    }
+  },
+  "Screenshot_20.png": {
+    "predicted_class": "Success",
+    "confidence": 0.9626027941703796,
+    "probabilities": {
+      "Failure": 0.005418664775788784,
+      "Loading": 0.03197856247425079,
+      "Success": 0.9626027941703796
+    }
+  },
+  "success073.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9837639331817627,
+    "probabilities": {
+      "Failure": 0.008076716214418411,
+      "Loading": 0.008159357123076916,
+      "Success": 0.9837639331817627
+    }
+  },
+  "success067.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9507409334182739,
+    "probabilities": {
+      "Failure": 0.019722875207662582,
+      "Loading": 0.029536167159676552,
+      "Success": 0.9507409334182739
+    }
+  },
+  "fail017.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.843603789806366,
+    "probabilities": {
+      "Failure": 0.843603789806366,
+      "Loading": 0.07262314856052399,
+      "Success": 0.08377314358949661
+    }
+  },
+  "fail003.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9288387894630432,
+    "probabilities": {
+      "Failure": 0.9288387894630432,
+      "Loading": 0.03800905868411064,
+      "Success": 0.03315211459994316
+    }
+  },
+  "fail002.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.8242220282554626,
+    "probabilities": {
+      "Failure": 0.8242220282554626,
+      "Loading": 0.14500075578689575,
+      "Success": 0.030777156352996826
+    }
+  },
+  "fail016.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9097087383270264,
+    "probabilities": {
+      "Failure": 0.9097087383270264,
+      "Loading": 0.04332748427987099,
+      "Success": 0.04696379229426384
+    }
+  },
+  "success066.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9553599953651428,
+    "probabilities": {
+      "Failure": 0.013462998904287815,
+      "Loading": 0.031177015975117683,
+      "Success": 0.9553599953651428
+    }
+  },
+  "success072.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9563276767730713,
+    "probabilities": {
+      "Failure": 0.01897026225924492,
+      "Loading": 0.024702096357941628,
+      "Success": 0.9563276767730713
+    }
+  },
+  "load026.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9911172389984131,
+    "probabilities": {
+      "Failure": 0.003664679592475295,
+      "Loading": 0.9911172389984131,
+      "Success": 0.005218056030571461
+    }
+  },
+  "load032.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9706652164459229,
+    "probabilities": {
+      "Failure": 0.021952081471681595,
+      "Loading": 0.9706652164459229,
+      "Success": 0.007382706273347139
+    }
+  },
+  "load024.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9921046495437622,
+    "probabilities": {
+      "Failure": 0.003391413949429989,
+      "Loading": 0.9921046495437622,
+      "Success": 0.004503972828388214
+    }
+  },
+  "load030.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9701767563819885,
+    "probabilities": {
+      "Failure": 0.02216111309826374,
+      "Loading": 0.9701767563819885,
+      "Success": 0.0076621947810053825
+    }
+  },
+  "load018.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9665384888648987,
+    "probabilities": {
+      "Failure": 0.023026376962661743,
+      "Loading": 0.9665384888648987,
+      "Success": 0.010435116477310658
+    }
+  },
+  "success058.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9559083580970764,
+    "probabilities": {
+      "Failure": 0.021975278854370117,
+      "Loading": 0.022116368636488914,
+      "Success": 0.9559083580970764
+    }
+  },
+  "success064.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9609324932098389,
+    "probabilities": {
+      "Failure": 0.019726863130927086,
+      "Loading": 0.019340597093105316,
+      "Success": 0.9609324932098389
+    }
+  },
+  "success070.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.967287003993988,
+    "probabilities": {
+      "Failure": 0.014962478540837765,
+      "Loading": 0.017750531435012817,
+      "Success": 0.967287003993988
+    }
+  },
+  "fail000.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.8387696146965027,
+    "probabilities": {
+      "Failure": 0.8387696146965027,
+      "Loading": 0.08673194795846939,
+      "Success": 0.07449844479560852
+    }
+  },
+  "fail014.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.862859308719635,
+    "probabilities": {
+      "Failure": 0.862859308719635,
+      "Loading": 0.11365098506212234,
+      "Success": 0.023489676415920258
+    }
+  },
+  "fail028.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.8242220282554626,
+    "probabilities": {
+      "Failure": 0.8242220282554626,
+      "Loading": 0.14500075578689575,
+      "Success": 0.030777156352996826
+    }
+  },
+  "fail029.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.8513378500938416,
+    "probabilities": {
+      "Failure": 0.8513378500938416,
+      "Loading": 0.11383724212646484,
+      "Success": 0.03482484817504883
+    }
+  },
+  "fail015.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9895445704460144,
+    "probabilities": {
+      "Failure": 0.9895445704460144,
+      "Loading": 0.004444584250450134,
+      "Success": 0.006010763812810183
+    }
+  },
+  "fail001.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.876465380191803,
+    "probabilities": {
+      "Failure": 0.876465380191803,
+      "Loading": 0.054499268531799316,
+      "Success": 0.06903532892465591
+    }
+  },
+  "success071.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.966489315032959,
+    "probabilities": {
+      "Failure": 0.01831420697271824,
+      "Loading": 0.015196597203612328,
+      "Success": 0.966489315032959
+    }
+  },
+  "success065.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9717838168144226,
+    "probabilities": {
+      "Failure": 0.0164286270737648,
+      "Loading": 0.01178747322410345,
+      "Success": 0.9717838168144226
+    }
+  },
+  "success059.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9617533683776855,
+    "probabilities": {
+      "Failure": 0.019021226093173027,
+      "Loading": 0.019225383177399635,
+      "Success": 0.9617533683776855
+    }
+  },
+  "load019.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9679089188575745,
+    "probabilities": {
+      "Failure": 0.02208114042878151,
+      "Loading": 0.9679089188575745,
+      "Success": 0.010009939782321453
+    }
+  },
+  "load031.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9877390265464783,
+    "probabilities": {
+      "Failure": 0.006843531504273415,
+      "Loading": 0.9877390265464783,
+      "Success": 0.0054174005053937435
+    }
+  },
+  "load025.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9911172389984131,
+    "probabilities": {
+      "Failure": 0.003664679592475295,
+      "Loading": 0.9911172389984131,
+      "Success": 0.005218056030571461
+    }
+  },
+  "load009.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.947766900062561,
+    "probabilities": {
+      "Failure": 0.013071145862340927,
+      "Loading": 0.947766900062561,
+      "Success": 0.03916196897625923
+    }
+  },
+  "load021.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.978035569190979,
+    "probabilities": {
+      "Failure": 0.007373076397925615,
+      "Loading": 0.978035569190979,
+      "Success": 0.014591391198337078
+    }
+  },
+  "load035.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.969950795173645,
+    "probabilities": {
+      "Failure": 0.014076200313866138,
+      "Loading": 0.969950795173645,
+      "Success": 0.015972968190908432
+    }
+  },
+  "success061.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9540814161300659,
+    "probabilities": {
+      "Failure": 0.01430598832666874,
+      "Loading": 0.031612589955329895,
+      "Success": 0.9540814161300659
+    }
+  },
+  "success075.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9823198914527893,
+    "probabilities": {
+      "Failure": 0.004919953178614378,
+      "Loading": 0.012760256417095661,
+      "Success": 0.9823198914527893
+    }
+  },
+  "success049.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9461784362792969,
+    "probabilities": {
+      "Failure": 0.020436055958271027,
+      "Loading": 0.03338543325662613,
+      "Success": 0.9461784362792969
+    }
+  },
+  "fail039.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.8574471473693848,
+    "probabilities": {
+      "Failure": 0.8574471473693848,
+      "Loading": 0.12029556185007095,
+      "Success": 0.022257279604673386
+    }
+  },
+  "fail005.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9099196195602417,
+    "probabilities": {
+      "Failure": 0.9099196195602417,
+      "Loading": 0.04489544779062271,
+      "Success": 0.04518497735261917
+    }
+  },
+  "fail011.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9897322058677673,
+    "probabilities": {
+      "Failure": 0.9897322058677673,
+      "Loading": 0.005100499372929335,
+      "Success": 0.005167241673916578
+    }
+  },
+  "fail010.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9099196195602417,
+    "probabilities": {
+      "Failure": 0.9099196195602417,
+      "Loading": 0.04489544779062271,
+      "Success": 0.04518497735261917
+    }
+  },
+  "fail004.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9288387894630432,
+    "probabilities": {
+      "Failure": 0.9288387894630432,
+      "Loading": 0.03800905868411064,
+      "Success": 0.03315211459994316
+    }
+  },
+  "fail038.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.8242220282554626,
+    "probabilities": {
+      "Failure": 0.8242220282554626,
+      "Loading": 0.14500075578689575,
+      "Success": 0.030777156352996826
+    }
+  },
+  "success048.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9433555603027344,
+    "probabilities": {
+      "Failure": 0.020497914403676987,
+      "Loading": 0.03614649176597595,
+      "Success": 0.9433555603027344
+    }
+  },
+  "success074.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9837416410446167,
+    "probabilities": {
+      "Failure": 0.005518653430044651,
+      "Loading": 0.010739711113274097,
+      "Success": 0.9837416410446167
+    }
+  },
+  "success060.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9172773957252502,
+    "probabilities": {
+      "Failure": 0.040084414184093475,
+      "Loading": 0.0426381416618824,
+      "Success": 0.9172773957252502
+    }
+  },
+  "load034.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9471432566642761,
+    "probabilities": {
+      "Failure": 0.025196820497512817,
+      "Loading": 0.9471432566642761,
+      "Success": 0.027659976854920387
+    }
+  },
+  "load020.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.6681036353111267,
+    "probabilities": {
+      "Failure": 0.2688237428665161,
+      "Loading": 0.6681036353111267,
+      "Success": 0.06307260692119598
+    }
+  },
+  "load008.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.8697615265846252,
+    "probabilities": {
+      "Failure": 0.08337397128343582,
+      "Loading": 0.8697615265846252,
+      "Success": 0.046864524483680725
+    }
+  },
+  "load036.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9491322040557861,
+    "probabilities": {
+      "Failure": 0.03315681219100952,
+      "Loading": 0.9491322040557861,
+      "Success": 0.017710980027914047
+    }
+  },
+  "load022.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.5254451036453247,
+    "probabilities": {
+      "Failure": 0.41132813692092896,
+      "Loading": 0.5254451036453247,
+      "Success": 0.06322672963142395
+    }
+  },
+  "Screenshot_19.png": {
+    "predicted_class": "Success",
+    "confidence": 0.984269380569458,
+    "probabilities": {
+      "Failure": 0.0030432473868131638,
+      "Loading": 0.01268733385950327,
+      "Success": 0.984269380569458
+    }
+  },
+  "success076.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9559277296066284,
+    "probabilities": {
+      "Failure": 0.013059877790510654,
+      "Loading": 0.03101237118244171,
+      "Success": 0.9559277296066284
+    }
+  },
+  "success062.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9548302888870239,
+    "probabilities": {
+      "Failure": 0.013859502971172333,
+      "Loading": 0.03131020441651344,
+      "Success": 0.9548302888870239
+    }
+  },
+  "success089.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9463813900947571,
+    "probabilities": {
+      "Failure": 0.009357772767543793,
+      "Loading": 0.0442608967423439,
+      "Success": 0.9463813900947571
+    }
+  },
+  "fail012.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9897322058677673,
+    "probabilities": {
+      "Failure": 0.9897322058677673,
+      "Loading": 0.005100499372929335,
+      "Success": 0.005167241673916578
+    }
+  },
+  "fail006.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9097087383270264,
+    "probabilities": {
+      "Failure": 0.9097087383270264,
+      "Loading": 0.04332748427987099,
+      "Success": 0.04696379229426384
+    }
+  },
+  "fail007.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9097087383270264,
+    "probabilities": {
+      "Failure": 0.9097087383270264,
+      "Loading": 0.04332748427987099,
+      "Success": 0.04696379229426384
+    }
+  },
+  "fail013.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9897322058677673,
+    "probabilities": {
+      "Failure": 0.9897322058677673,
+      "Loading": 0.005100499372929335,
+      "Success": 0.005167241673916578
+    }
+  },
+  "success088.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9503366947174072,
+    "probabilities": {
+      "Failure": 0.024005943909287453,
+      "Loading": 0.025657348334789276,
+      "Success": 0.9503366947174072
+    }
+  },
+  "success063.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9790641665458679,
+    "probabilities": {
+      "Failure": 0.007565559819340706,
+      "Loading": 0.013370202854275703,
+      "Success": 0.9790641665458679
+    }
+  },
+  "success077.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9837416410446167,
+    "probabilities": {
+      "Failure": 0.005518653430044651,
+      "Loading": 0.010739711113274097,
+      "Success": 0.9837416410446167
+    }
+  },
+  "Screenshot_18.png": {
+    "predicted_class": "Success",
+    "confidence": 0.8114908337593079,
+    "probabilities": {
+      "Failure": 0.0467127226293087,
+      "Loading": 0.14179649949073792,
+      "Success": 0.8114908337593079
+    }
+  },
+  "load023.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9820687174797058,
+    "probabilities": {
+      "Failure": 0.006782153621315956,
+      "Loading": 0.9820687174797058,
+      "Success": 0.011149105615913868
+    }
+  },
+  "load037.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9558786153793335,
+    "probabilities": {
+      "Failure": 0.030785808339715004,
+      "Loading": 0.9558786153793335,
+      "Success": 0.013335643336176872
+    }
+  },
+  "load050.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9920790791511536,
+    "probabilities": {
+      "Failure": 0.005164760630577803,
+      "Loading": 0.9920790791511536,
+      "Success": 0.0027561758179217577
+    }
+  },
+  "load044.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9308601021766663,
+    "probabilities": {
+      "Failure": 0.0382549911737442,
+      "Loading": 0.9308601021766663,
+      "Success": 0.03088483400642872
+    }
+  },
+  "success038.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.910759449005127,
+    "probabilities": {
+      "Failure": 0.018124734982848167,
+      "Loading": 0.07111580669879913,
+      "Success": 0.910759449005127
+    }
+  },
+  "success010.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9509416222572327,
+    "probabilities": {
+      "Failure": 0.02386208064854145,
+      "Loading": 0.025196267291903496,
+      "Success": 0.9509416222572327
+    }
+  },
+  "success004.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.946494996547699,
+    "probabilities": {
+      "Failure": 0.020401285961270332,
+      "Loading": 0.03310369327664375,
+      "Success": 0.946494996547699
+    }
+  },
+  "Screenshot_6.png": {
+    "predicted_class": "Success",
+    "confidence": 0.9663282036781311,
+    "probabilities": {
+      "Failure": 0.010334459133446217,
+      "Loading": 0.023337343707680702,
+      "Success": 0.9663282036781311
+    }
+  },
+  "fail074.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9897322058677673,
+    "probabilities": {
+      "Failure": 0.9897322058677673,
+      "Loading": 0.005100499372929335,
+      "Success": 0.005167241673916578
+    }
+  },
+  "fail060.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9897322058677673,
+    "probabilities": {
+      "Failure": 0.9897322058677673,
+      "Loading": 0.005100499372929335,
+      "Success": 0.005167241673916578
+    }
+  },
+  "fail048.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9735797047615051,
+    "probabilities": {
+      "Failure": 0.9735797047615051,
+      "Loading": 0.009846656583249569,
+      "Success": 0.016573691740632057
+    }
+  },
+  "fail049.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9735797047615051,
+    "probabilities": {
+      "Failure": 0.9735797047615051,
+      "Loading": 0.009846656583249569,
+      "Success": 0.016573691740632057
+    }
+  },
+  "fail061.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9897322058677673,
+    "probabilities": {
+      "Failure": 0.9897322058677673,
+      "Loading": 0.005100499372929335,
+      "Success": 0.005167241673916578
+    }
+  },
+  "fail075.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9895445704460144,
+    "probabilities": {
+      "Failure": 0.9895445704460144,
+      "Loading": 0.004444584250450134,
+      "Success": 0.006010763812810183
+    }
+  },
+  "Screenshot_7.png": {
+    "predicted_class": "Success",
+    "confidence": 0.993033766746521,
+    "probabilities": {
+      "Failure": 0.0031595826148986816,
+      "Loading": 0.0038066981360316277,
+      "Success": 0.993033766746521
+    }
+  },
+  "success005.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9460794925689697,
+    "probabilities": {
+      "Failure": 0.020250150933861732,
+      "Loading": 0.03367035463452339,
+      "Success": 0.9460794925689697
+    }
+  },
+  "success011.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.966489315032959,
+    "probabilities": {
+      "Failure": 0.01831420697271824,
+      "Loading": 0.015196597203612328,
+      "Success": 0.966489315032959
+    }
+  },
+  "success039.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9466084241867065,
+    "probabilities": {
+      "Failure": 0.020015213638544083,
+      "Loading": 0.033376336097717285,
+      "Success": 0.9466084241867065
+    }
+  },
+  "load045.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.8871496915817261,
+    "probabilities": {
+      "Failure": 0.07559657096862793,
+      "Loading": 0.8871496915817261,
+      "Success": 0.0372537225484848
+    }
+  },
+  "load051.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9753815531730652,
+    "probabilities": {
+      "Failure": 0.015253185294568539,
+      "Loading": 0.9753815531730652,
+      "Success": 0.00936522614210844
+    }
+  },
+  "load047.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9642333984375,
+    "probabilities": {
+      "Failure": 0.013038650155067444,
+      "Loading": 0.9642333984375,
+      "Success": 0.022727902978658676
+    }
+  },
+  "load053.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9686068296432495,
+    "probabilities": {
+      "Failure": 0.0224068071693182,
+      "Loading": 0.9686068296432495,
+      "Success": 0.008986393921077251
+    }
+  },
+  "success007.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9460110068321228,
+    "probabilities": {
+      "Failure": 0.020657725632190704,
+      "Loading": 0.03333123028278351,
+      "Success": 0.9460110068321228
+    }
+  },
+  "Screenshot_5.png": {
+    "predicted_class": "Success",
+    "confidence": 0.9759031534194946,
+    "probabilities": {
+      "Failure": 0.010847819969058037,
+      "Loading": 0.013249031268060207,
+      "Success": 0.9759031534194946
+    }
+  },
+  "success013.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9509416222572327,
+    "probabilities": {
+      "Failure": 0.02386208064854145,
+      "Loading": 0.025196267291903496,
+      "Success": 0.9509416222572327
+    }
+  },
+  "fail088.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9897322058677673,
+    "probabilities": {
+      "Failure": 0.9897322058677673,
+      "Loading": 0.005100499372929335,
+      "Success": 0.005167241673916578
+    }
+  },
+  "fail063.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9842150807380676,
+    "probabilities": {
+      "Failure": 0.9842150807380676,
+      "Loading": 0.00910253170877695,
+      "Success": 0.006682346109300852
+    }
+  },
+  "fail077.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9897322058677673,
+    "probabilities": {
+      "Failure": 0.9897322058677673,
+      "Loading": 0.005100499372929335,
+      "Success": 0.005167241673916578
+    }
+  },
+  "fail076.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.7261834144592285,
+    "probabilities": {
+      "Failure": 0.7261834144592285,
+      "Loading": 0.25719842314720154,
+      "Success": 0.016618188470602036
+    }
+  },
+  "fail062.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9858497977256775,
+    "probabilities": {
+      "Failure": 0.9858497977256775,
+      "Loading": 0.009076886810362339,
+      "Success": 0.005073301959782839
+    }
+  },
+  "fail089.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.4752735197544098,
+    "probabilities": {
+      "Failure": 0.3945995271205902,
+      "Loading": 0.4752735197544098,
+      "Success": 0.1301269680261612
+    }
+  },
+  "success012.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9406362175941467,
+    "probabilities": {
+      "Failure": 0.028901508077979088,
+      "Loading": 0.030462244525551796,
+      "Success": 0.9406362175941467
+    }
+  },
+  "Screenshot_4.png": {
+    "predicted_class": "Success",
+    "confidence": 0.9630594253540039,
+    "probabilities": {
+      "Failure": 0.008088000118732452,
+      "Loading": 0.02885247766971588,
+      "Success": 0.9630594253540039
+    }
+  },
+  "success006.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9465709924697876,
+    "probabilities": {
+      "Failure": 0.020230213180184364,
+      "Loading": 0.033198826014995575,
+      "Success": 0.9465709924697876
+    }
+  },
+  "load052.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9797782897949219,
+    "probabilities": {
+      "Failure": 0.0066690933890640736,
+      "Loading": 0.9797782897949219,
+      "Success": 0.013552620075643063
+    }
+  },
+  "load046.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9517087936401367,
+    "probabilities": {
+      "Failure": 0.026097308844327927,
+      "Loading": 0.9517087936401367,
+      "Success": 0.022193850949406624
+    }
+  },
+  "load042.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9753815531730652,
+    "probabilities": {
+      "Failure": 0.015253185294568539,
+      "Loading": 0.9753815531730652,
+      "Success": 0.00936522614210844
+    }
+  },
+  "load056.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.8715672492980957,
+    "probabilities": {
+      "Failure": 0.8715672492980957,
+      "Loading": 0.10398056358098984,
+      "Success": 0.024452146142721176
+    }
+  },
+  "success002.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9451951384544373,
+    "probabilities": {
+      "Failure": 0.02050522342324257,
+      "Loading": 0.034299612045288086,
+      "Success": 0.9451951384544373
+    }
+  },
+  "success016.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9836441874504089,
+    "probabilities": {
+      "Failure": 0.005562741309404373,
+      "Loading": 0.010793094523251057,
+      "Success": 0.9836441874504089
+    }
+  },
+  "fail066.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9897966980934143,
+    "probabilities": {
+      "Failure": 0.9897966980934143,
+      "Loading": 0.004805595148354769,
+      "Success": 0.005397683475166559
+    }
+  },
+  "fail072.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9897322058677673,
+    "probabilities": {
+      "Failure": 0.9897322058677673,
+      "Loading": 0.005100499372929335,
+      "Success": 0.005167241673916578
+    }
+  },
+  "fail073.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9191509485244751,
+    "probabilities": {
+      "Failure": 0.9191509485244751,
+      "Loading": 0.023465488106012344,
+      "Success": 0.057383567094802856
+    }
+  },
+  "fail067.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9897322058677673,
+    "probabilities": {
+      "Failure": 0.9897322058677673,
+      "Loading": 0.005100499372929335,
+      "Success": 0.005167241673916578
+    }
+  },
+  "success017.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.6052747368812561,
+    "probabilities": {
+      "Failure": 0.02923031710088253,
+      "Loading": 0.365494966506958,
+      "Success": 0.6052747368812561
+    }
+  },
+  "Screenshot_1.png": {
+    "predicted_class": "Failure",
+    "confidence": 0.44651564955711365,
+    "probabilities": {
+      "Failure": 0.44651564955711365,
+      "Loading": 0.4424673616886139,
+      "Success": 0.11101700365543365
+    }
+  },
+  "success003.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9463537335395813,
+    "probabilities": {
+      "Failure": 0.020516175776720047,
+      "Loading": 0.03313014283776283,
+      "Success": 0.9463537335395813
+    }
+  },
+  "load057.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.945382833480835,
+    "probabilities": {
+      "Failure": 0.04207019880414009,
+      "Loading": 0.945382833480835,
+      "Success": 0.012546965852379799
+    }
+  },
+  "load043.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.8827008605003357,
+    "probabilities": {
+      "Failure": 0.07858649641275406,
+      "Loading": 0.8827008605003357,
+      "Success": 0.038712646812200546
+    }
+  },
+  "load055.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.43420636653900146,
+    "probabilities": {
+      "Failure": 0.43420636653900146,
+      "Loading": 0.37423962354660034,
+      "Success": 0.19155406951904297
+    }
+  },
+  "load041.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9920790791511536,
+    "probabilities": {
+      "Failure": 0.005164760630577803,
+      "Loading": 0.9920790791511536,
+      "Success": 0.0027561758179217577
+    }
+  },
+  "success015.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9509416222572327,
+    "probabilities": {
+      "Failure": 0.02386208064854145,
+      "Loading": 0.025196267291903496,
+      "Success": 0.9509416222572327
+    }
+  },
+  "success001.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9466084241867065,
+    "probabilities": {
+      "Failure": 0.020015213638544083,
+      "Loading": 0.033376336097717285,
+      "Success": 0.9466084241867065
+    }
+  },
+  "success029.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9617533683776855,
+    "probabilities": {
+      "Failure": 0.019021226093173027,
+      "Loading": 0.019225383177399635,
+      "Success": 0.9617533683776855
+    }
+  },
+  "fail059.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.974783182144165,
+    "probabilities": {
+      "Failure": 0.974783182144165,
+      "Loading": 0.012222987599670887,
+      "Success": 0.012993806041777134
+    }
+  },
+  "fail071.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.7482914924621582,
+    "probabilities": {
+      "Failure": 0.7482914924621582,
+      "Loading": 0.23269912600517273,
+      "Success": 0.01900942251086235
+    }
+  },
+  "fail065.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9858497977256775,
+    "probabilities": {
+      "Failure": 0.9858497977256775,
+      "Loading": 0.009076886810362339,
+      "Success": 0.005073301959782839
+    }
+  },
+  "fail064.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9858497977256775,
+    "probabilities": {
+      "Failure": 0.9858497977256775,
+      "Loading": 0.009076886810362339,
+      "Success": 0.005073301959782839
+    }
+  },
+  "fail070.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9897322058677673,
+    "probabilities": {
+      "Failure": 0.9897322058677673,
+      "Loading": 0.005100499372929335,
+      "Success": 0.005167241673916578
+    }
+  },
+  "fail058.jpg": {
+    "predicted_class": "Failure",
+    "confidence": 0.9858497977256775,
+    "probabilities": {
+      "Failure": 0.9858497977256775,
+      "Loading": 0.009076886810362339,
+      "Success": 0.005073301959782839
+    }
+  },
+  "success028.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9609324932098389,
+    "probabilities": {
+      "Failure": 0.019726863130927086,
+      "Loading": 0.019340597093105316,
+      "Success": 0.9609324932098389
+    }
+  },
+  "Screenshot_2.png": {
+    "predicted_class": "Loading",
+    "confidence": 0.5558658838272095,
+    "probabilities": {
+      "Failure": 0.25049954652786255,
+      "Loading": 0.5558658838272095,
+      "Success": 0.19363455474376678
+    }
+  },
+  "success000.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.981705904006958,
+    "probabilities": {
+      "Failure": 0.009393163956701756,
+      "Loading": 0.008900909684598446,
+      "Success": 0.981705904006958
+    }
+  },
+  "success014.jpg": {
+    "predicted_class": "Success",
+    "confidence": 0.9509416222572327,
+    "probabilities": {
+      "Failure": 0.02386208064854145,
+      "Loading": 0.025196267291903496,
+      "Success": 0.9509416222572327
+    }
+  },
+  "load040.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9877390265464783,
+    "probabilities": {
+      "Failure": 0.006843531504273415,
+      "Loading": 0.9877390265464783,
+      "Success": 0.0054174005053937435
+    }
+  },
+  "load054.jpg": {
+    "predicted_class": "Loading",
+    "confidence": 0.9777552485466003,
+    "probabilities": {
+      "Failure": 0.008649800904095173,
+      "Loading": 0.9777552485466003,
+      "Success": 0.013594945892691612
+    }
+  }
+}
