@@ -31,6 +31,8 @@ def parse_args():
                         help='量化模型（减小大小）')
     parser.add_argument('--model-name', type=str, default='model',
                         help='导出的模型名称前缀')
+    parser.add_argument('--use-timestamp', action='store_true',
+                        help='使用时间戳命名避免覆盖已有模型')
 
     return parser.parse_args()
 
@@ -83,11 +85,24 @@ def main():
     print(f"导出格式: {', '.join(args.formats).upper()}")
     print(f"输出目录: {args.output_dir}")
     print(f"量化: {'是' if args.quantize else '否'}")
+    print(f"使用时间戳: {'是' if args.use_timestamp else '否'}")
     print("="*70 + "\n")
 
     # 创建输出目录
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
+
+    # 生成时间戳和基础文件名
+    from datetime import datetime
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    base_name = f"{args.model_name}_{timestamp}" if args.use_timestamp else args.model_name
+
+    # 备份checkpoint（如果使用时间戳）
+    if args.use_timestamp:
+        import shutil
+        checkpoint_backup = output_dir / f"{args.model_name}_{timestamp}.pth"
+        shutil.copy(args.checkpoint, checkpoint_backup)
+        print(f"✓ 检查点已备份到: {checkpoint_backup}\n")
 
     # 加载模型
     print("加载模型...")
@@ -101,7 +116,13 @@ def main():
 
     # 导出各种格式
     for fmt in args.formats:
-        output_path = output_dir / f"{args.model_name}.{fmt if fmt != 'coreml' else 'mlpackage'}"
+        # 根据格式确定输出路径
+        if fmt == 'onnx':
+            output_path = output_dir / f"{base_name}.onnx"
+        elif fmt == 'coreml':
+            output_path = output_dir / f"{base_name}.mlpackage"
+        elif fmt == 'tflite':
+            output_path = output_dir / f"{base_name}.tflite"
 
         if fmt == 'onnx':
             success = export_onnx(model, str(output_path), img_size=args.img_size)
@@ -117,7 +138,6 @@ def main():
             results['coreml'] = success
 
         elif fmt == 'tflite':
-            output_path = output_dir / f"{args.model_name}.tflite"
             success = export_tflite(
                 model, str(output_path),
                 img_size=args.img_size,

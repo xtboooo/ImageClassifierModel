@@ -4,6 +4,8 @@ import sys
 from pathlib import Path
 import json
 import shutil
+import csv
+import time
 
 # 添加项目根目录到路径
 project_root = Path(__file__).parent.parent
@@ -26,7 +28,7 @@ def parse_args():
                         help='模型检查点路径')
     parser.add_argument('--input-dir', type=str, required=True,
                         help='输入图片目录')
-    parser.add_argument('--output', type=str, default='predictions.json',
+    parser.add_argument('--output', type=str, default='data/output/predictions.json',
                         help='输出结果文件路径')
     parser.add_argument('--img-size', type=int, default=224,
                         help='输入图像尺寸')
@@ -36,6 +38,10 @@ def parse_args():
                         help='是否将图片复制到分类文件夹')
     parser.add_argument('--output-dir', type=str, default='data/output/classified_images',
                         help='分类图片输出目录')
+    parser.add_argument('--output-csv', type=str, default=None,
+                        help='CSV输出路径（可选，默认与JSON同名）')
+    parser.add_argument('--measure-time', action='store_true',
+                        help='记录每张图片的推理耗时')
 
     return parser.parse_args()
 
@@ -60,20 +66,27 @@ def load_image(image_path, transform):
         return None
 
 
-def predict_single(model, image_tensor, device, class_names):
+def predict_single(model, image_tensor, device, class_names, measure_time=False):
     """
-    对单张图片进行预测
+    对单张图片进行预测（增强版：支持耗时测量）
 
     Args:
         model: 模型
         image_tensor: 图片张量
         device: 设备
         class_names: 类别名称列表
+        measure_time: 是否测量推理耗时
 
     Returns:
         dict: 预测结果
     """
     model.eval()
+
+    # 开始计时
+    if measure_time:
+        if device.type == 'cuda':
+            torch.cuda.synchronize()
+        start_time = time.perf_counter()
 
     with torch.no_grad():
         # 添加 batch 维度
@@ -88,20 +101,32 @@ def predict_single(model, image_tensor, device, class_names):
         # 获取预测类别和置信度
         confidence, predicted = torch.max(probabilities, 1)
 
-        predicted_class = class_names[predicted.item()]
-        confidence_score = confidence.item()
+    # 结束计时
+    if measure_time:
+        if device.type == 'cuda':
+            torch.cuda.synchronize()
+        end_time = time.perf_counter()
+        inference_time_ms = (end_time - start_time) * 1000
 
-        # 获取所有类别的概率
-        all_probs = {
-            class_names[i]: float(probabilities[0][i])
-            for i in range(len(class_names))
-        }
+    predicted_class = class_names[predicted.item()]
+    confidence_score = confidence.item()
 
-        return {
-            'predicted_class': predicted_class,
-            'confidence': confidence_score,
-            'probabilities': all_probs
-        }
+    # 获取所有类别的概率
+    all_probs = {
+        class_names[i]: float(probabilities[0][i])
+        for i in range(len(class_names))
+    }
+
+    result = {
+        'predicted_class': predicted_class,
+        'confidence': confidence_score,
+        'probabilities': all_probs
+    }
+
+    if measure_time:
+        result['inference_time_ms'] = inference_time_ms
+
+    return result
 
 
 def main():
@@ -158,8 +183,9 @@ def main():
         if image_tensor is None:
             continue
 
-        # 预测
-        prediction = predict_single(model, image_tensor, device, class_names)
+        # 预测（传递 measure_time 参数）
+        prediction = predict_single(model, image_tensor, device, class_names,
+                                    measure_time=args.measure_time)
 
         # 保存结果
         results[str(image_path.name)] = prediction
@@ -167,7 +193,7 @@ def main():
         # 统计类别
         class_counts[prediction['predicted_class']] += 1
 
-    # 保存结果
+    # 保存JSON结果
     output_path = Path(args.output)
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -175,6 +201,31 @@ def main():
         json.dump(results, f, ensure_ascii=False, indent=2)
 
     print(f"\n✓ 推理完成！结果已保存到: {output_path}")
+
+    # 保存CSV结果（新增）
+    if args.output_csv or args.measure_time:
+        csv_path = args.output_csv or str(output_path).replace('.json', '.csv')
+
+        with open(csv_path, 'w', newline='', encoding='utf-8') as f:
+            fieldnames = ['filename', 'predicted_class', 'confidence']
+            if args.measure_time:
+                fieldnames.append('inference_time_ms')
+
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+
+            for filename, prediction in results.items():
+                row = {
+                    'filename': filename,
+                    'predicted_class': prediction['predicted_class'],
+                    'confidence': f"{prediction['confidence']:.4f}"
+                }
+                if args.measure_time:
+                    row['inference_time_ms'] = f"{prediction['inference_time_ms']:.2f}"
+
+                writer.writerow(row)
+
+        print(f"✓ CSV结果已保存到: {csv_path}")
 
     # 打印统计信息
     print("\n" + "="*70)
