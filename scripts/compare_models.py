@@ -421,8 +421,8 @@ def parse_args():
                         help='PyTorch checkpoint路径')
     parser.add_argument('--onnx', type=str, required=True,
                         help='ONNX模型路径')
-    parser.add_argument('--tflite', type=str, default=None,
-                        help='TFLite模型路径（可选，需要Python 3.11环境）')
+    parser.add_argument('--tflite', type=str, required=True,
+                        help='TFLite模型路径')
     parser.add_argument('--test-dir', type=str, required=True,
                         help='测试图片目录')
     parser.add_argument('--output-dir', type=str, default='data/output/model_comparison',
@@ -445,7 +445,7 @@ def main():
         rows=[
             ["PyTorch Checkpoint", args.checkpoint],
             ["ONNX 模型", args.onnx],
-            ["TFLite 模型", args.tflite or "未指定"],
+            ["TFLite 模型", args.tflite],
             ["测试目录", args.test_dir]
         ]
     )
@@ -453,11 +453,9 @@ def main():
     # 配置模型
     models_config = {
         'pytorch': {'path': args.checkpoint, 'type': 'checkpoint'},
-        'onnx': {'path': args.onnx, 'type': 'onnx'}
+        'onnx': {'path': args.onnx, 'type': 'onnx'},
+        'tflite': {'path': args.tflite, 'type': 'tflite'}
     }
-
-    if args.tflite:
-        models_config['tflite'] = {'path': args.tflite, 'type': 'tflite'}
 
     class_names = ['Failure', 'Loading', 'Success']
 
