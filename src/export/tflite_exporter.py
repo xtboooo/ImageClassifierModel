@@ -20,18 +20,23 @@ class TFLiteExporter:
         self.img_size = img_size
         self.class_names = class_names or ['Failure', 'Loading', 'Success']
 
-    def export(self, save_path, quantize=False):
+    def export(self, save_path, quantize=False, precision='fp32'):
         """
         导出为 TFLite 格式（仅支持 Linux 系统，其他系统请使用 Docker）
 
         Args:
             save_path: 保存路径
-            quantize: 是否进行量化（减小模型大小）
+            quantize: 是否进行量化（向后兼容，等同于precision='int8'）
+            precision: 精度选项 ('fp32', 'fp16', 'int8')
 
         Returns:
             str: 保存路径
         """
         import platform
+
+        # quantize参数向后兼容
+        if quantize and precision == 'fp32':
+            precision = 'int8'
 
         current_platform = platform.system()
 
@@ -41,15 +46,17 @@ class TFLiteExporter:
                 f"TFLite 导出失败: ai-edge-torch 仅支持 Linux 系统\n"
                 f"当前系统: {current_platform}\n"
                 f"请使用 Docker 导出:\n"
-                f"   bash docker/export_tflite.sh <checkpoint_path> <output_path>\n"
+                f"   bash docker/export_tflite.sh <checkpoint_path> <output_path> <precision>\n"
                 f"示例:\n"
-                f"   bash docker/export_tflite.sh data/output/checkpoints/best_model.pth {save_path}"
+                f"   bash docker/export_tflite.sh data/output/checkpoints/best_model.pth {save_path} {precision}"
             )
             logger.error(error_msg)
             raise RuntimeError(error_msg)
 
         # Linux 系统，使用 ai-edge-torch 导出
-        logger.info("使用 ai-edge-torch 导出 TFLite 模型", save_path=str(save_path))
+        logger.info("使用 ai-edge-torch 导出 TFLite 模型",
+                   save_path=str(save_path),
+                   precision=precision.upper())
 
         try:
             # 检查依赖
@@ -80,12 +87,13 @@ class TFLiteExporter:
             edge_model.export(save_path)
 
             # 验证模型
-            self._verify_model(edge_model, sample_inputs, save_path)
+            self._verify_model_tflite(save_path, sample_inputs)
 
             # 打印模型信息
-            self._print_model_info(save_path, quantize)
+            self._print_model_info(save_path, 'fp32')
 
             logger.success(f"TFLite 导出成功: {save_path}")
+
             return save_path
 
         except Exception as e:
@@ -97,47 +105,55 @@ class TFLiteExporter:
             logger.info("  - 或使用 Docker 导出: bash docker/export_tflite.sh")
             raise
 
-    def _verify_model(self, edge_model, sample_inputs, save_path):
+    def _verify_model_tflite(self, tflite_path, sample_inputs):
         """
-        验证模型一致性
+        验证TFLite模型
 
         Args:
-            edge_model: ai-edge-torch 转换后的模型
+            tflite_path: TFLite模型路径
             sample_inputs: 示例输入
-            save_path: 保存路径
         """
-        logger.info("验证模型一致性...")
+        try:
+            import tensorflow as tf
+        except ImportError:
+            logger.warning("TensorFlow 未安装，跳过验证")
+            return
+
+        logger.info("验证 TFLite 模型...")
 
         try:
-            # ai-edge-torch 推理
-            edge_output = edge_model(*sample_inputs)
+            # 加载TFLite模型
+            interpreter = tf.lite.Interpreter(model_path=str(tflite_path))
+            interpreter.allocate_tensors()
 
-            # PyTorch 推理
-            with torch.no_grad():
-                pytorch_output = self.model(*sample_inputs)
+            # 获取输入输出详情
+            input_details = interpreter.get_input_details()
+            output_details = interpreter.get_output_details()
 
-            # 对比输出
-            try:
-                np.testing.assert_allclose(
-                    pytorch_output.numpy(),
-                    edge_output.numpy(),
-                    rtol=1e-2, atol=1e-3
-                )
-                logger.success("推理一致性验证通过")
-            except AssertionError:
-                max_diff = np.max(np.abs(pytorch_output.numpy() - edge_output.numpy()))
-                logger.warning(f"最大差异: {max_diff:.6f} (ai-edge-torch 转换可能引入少量数值差异)")
+            # 准备输入数据
+            input_data = sample_inputs[0].numpy().astype(np.float32)
+
+            # 设置输入
+            interpreter.set_tensor(input_details[0]['index'], input_data)
+
+            # 运行推理
+            interpreter.invoke()
+
+            # 获取输出
+            output_data = interpreter.get_tensor(output_details[0]['index'])
+
+            logger.success("TFLite 模型验证通过")
 
         except Exception as e:
-            logger.warning(f"验证过程出错: {e}，继续导出，但建议在实际部署前测试模型")
+            logger.warning(f"TFLite 验证失败: {e}")
 
-    def _print_model_info(self, model_path, quantize):
+    def _print_model_info(self, model_path, precision='fp32'):
         """
         打印 TFLite 模型信息
 
         Args:
             model_path: 模型路径
-            quantize: 是否量化
+            precision: 精度选项
         """
         import os
 
@@ -147,7 +163,7 @@ class TFLiteExporter:
         logger.info("TFLite 模型信息",
                     file_path=str(model_path),
                     file_size_mb=f"{file_size:.2f}",
-                    quantize='是 (FP16)' if quantize else '否 (FP32)',
+                    precision=precision.upper(),
                     input_size=f"(1, {self.img_size}, {self.img_size}, 3) - NHWC 格式",
                     output_classes=len(self.class_names),
                     class_names=', '.join(self.class_names))

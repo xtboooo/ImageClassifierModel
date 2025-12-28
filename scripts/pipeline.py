@@ -419,20 +419,18 @@ class PipelineRunner:
             try:
                 if fmt == 'onnx':
                     from src.export.onnx_exporter import ONNXExporter
-                    from src.models.model_factory import \
-                        load_model_from_checkpoint
+                    from src.models.model_factory import load_model_from_checkpoint
 
                     model, _ = load_model_from_checkpoint(str(self.checkpoint_path))
                     exporter = ONNXExporter(model, img_size=224)
                     output_path = export_dir / 'model.onnx'
-                    exporter.export(str(output_path))
 
-                    logger.success("ONNX导出成功")
+                    exporter.export(str(output_path))
+                    logger.success("ONNX导出成功 (FP32)")
 
                 elif fmt == 'coreml':
                     from src.export.coreml_exporter import CoreMLExporter
-                    from src.models.model_factory import \
-                        load_model_from_checkpoint
+                    from src.models.model_factory import load_model_from_checkpoint
 
                     model, checkpoint = load_model_from_checkpoint(str(self.checkpoint_path))
                     class_names = checkpoint.get('config').class_names if 'config' in checkpoint else ['Failure', 'Loading', 'Success']
@@ -449,12 +447,14 @@ class PipelineRunner:
                     import subprocess
 
                     current_platform = platform.system()
-                    output_path = export_dir / 'model.tflite'
 
                     logger.info(f"检测到系统: {current_platform}")
 
-                    # 统一使用 Docker 导出（避免 ONNX 版本转换问题）
-                    logger.info("使用 Docker 导出 TFLite...")
+
+                    output_path = export_dir / 'model.tflite'
+
+                    # 统一使用 Docker 导出
+                    logger.info("使用 Docker 导出 TFLite (FP32)...")
 
                     # Docker 脚本路径
                     script_path = Path(__file__).parent.parent / 'docker' / 'export_tflite.sh'
@@ -464,7 +464,7 @@ class PipelineRunner:
 
                     # 运行 Docker 导出
                     result = subprocess.run(
-                        ['bash', str(script_path), str(self.checkpoint_path), str(output_path)],
+                        ['bash', str(script_path), str(self.checkpoint_path), str(output_path), 'fp32'],
                         capture_output=True,
                         text=True,
                         timeout=600
@@ -476,137 +476,214 @@ class PipelineRunner:
                             logger.error(f"错误信息: {result.stderr}")
                         raise RuntimeError(f"Docker 导出失败: {result.stderr}")
 
-                    logger.success("TFLite Docker 导出成功")
+                    logger.success("TFLite Docker 导出成功 (FP32)")
 
             except Exception as e:
                 logger.error(f"{fmt.upper()}导出失败: {e}")
 
     def test_inference(self):
         """阶段6: 测试图片推理"""
-        test_images_dir = Path(self.args.test_images)
-
-        if not test_images_dir.exists():
-            logger.warning(f"测试图片目录不存在: {test_images_dir}")
-            return
-
-        # 执行批量推理
-        import argparse as ap
+        # 确定测试图片目录：优先使用指定目录，否则使用 data/input 的所有图片
+        if self.args.test_images and Path(self.args.test_images).exists():
+            test_images_dir = Path(self.args.test_images)
+            logger.info(f"使用指定的测试图片目录: {test_images_dir}")
+        else:
+            test_images_dir = Path('data/input')
+            if not test_images_dir.exists():
+                logger.warning(f"默认测试图片目录不存在: {test_images_dir}")
+                return
+            logger.info(f"使用默认测试图片目录（递归扫描所有子目录）: {test_images_dir}")
 
         test_results_dir = self.run_dir / 'test_results'
         test_results_dir.mkdir(exist_ok=True)
 
-        # 创建推理参数
-        infer_args = ap.Namespace(
-            checkpoint=str(self.checkpoint_path),
-            input_dir=str(test_images_dir),
-            output=str(test_results_dir / 'predictions.json'),
-            img_size=224,
-            batch_size=1,
-            copy_to_folders=self.args.copy_images,
-            output_dir=str(self.run_dir / 'classified_images'),
-            output_csv=str(test_results_dir / 'predictions.csv'),
-            measure_time=True
-        )
+        # 检查是否有导出的模型
+        export_dir = self.run_dir / 'exported_models'
+        onnx_path = export_dir / 'model.onnx'
+        tflite_path = export_dir / 'model.tflite'
 
-        # 临时修改sys.argv来调用batch_inference
-        original_argv = sys.argv
-        sys.argv = ['batch_inference.py'] + [
-            '--checkpoint', str(infer_args.checkpoint),
-            '--input-dir', str(infer_args.input_dir),
-            '--output', str(infer_args.output),
-            '--measure-time'
+        # 判断是否使用多模型推理
+        use_multi_model = onnx_path.exists() and tflite_path.exists() and self.args.compare_models
+
+        if use_multi_model:
+            logger.info("检测到导出的模型，使用多模型推理")
+            self._multi_model_inference(test_images_dir, test_results_dir)
+        else:
+            logger.info("使用 PyTorch checkpoint 进行推理")
+            self._single_model_inference(test_images_dir, test_results_dir)
+
+    def _single_model_inference(self, test_images_dir, test_results_dir):
+        """单模型推理（仅使用 PyTorch checkpoint）"""
+        import csv
+        from PIL import Image
+        from src.data.transforms import get_val_transforms
+        from src.models.model_factory import load_model_from_checkpoint
+        from src.utils.device import get_device
+
+        device = get_device()
+        model, checkpoint = load_model_from_checkpoint(str(self.checkpoint_path))
+        model.to(device)
+        model.eval()
+
+        class_names = checkpoint.get('config').class_names if 'config' in checkpoint else ['Failure', 'Loading', 'Success']
+        transform = get_val_transforms(img_size=224)
+
+        # 递归获取所有图片
+        image_extensions = {'.png', '.jpg', '.jpeg', '.PNG', '.JPG', '.JPEG'}
+        image_paths = [
+            p for p in test_images_dir.rglob('*')
+            if p.is_file() and p.suffix in image_extensions
         ]
 
-        if infer_args.copy_to_folders:
-            sys.argv.extend(['--copy-to-folders', '--output-dir', str(infer_args.output_dir)])
+        logger.info(f"找到 {len(image_paths)} 张图片")
 
-        try:
-            # 直接调用推理逻辑（避免重复解析参数）
-            import csv
+        results = {}
+        class_counts = {name: 0 for name in class_names}
 
-            from PIL import Image
+        with RichProgressManager() as progress:
+            task = progress.add_task("处理测试图片", total=len(image_paths))
+            for image_path in image_paths:
+                try:
+                    image = Image.open(image_path).convert('RGB')
+                    image_tensor = transform(image)
 
-            from src.data.transforms import get_val_transforms
-            from src.models.model_factory import load_model_from_checkpoint
-            from src.utils.device import get_device
+                    # 推理
+                    start_time = time.perf_counter()
+                    with torch.no_grad():
+                        image_tensor = image_tensor.unsqueeze(0).to(device)
+                        outputs = model(image_tensor)
+                        probabilities = torch.nn.functional.softmax(outputs, dim=1)
+                        confidence, predicted = torch.max(probabilities, 1)
+                    end_time = time.perf_counter()
 
-            device = get_device()
-            model, checkpoint = load_model_from_checkpoint(str(self.checkpoint_path))
-            model.to(device)
-            model.eval()
+                    pred_class = class_names[predicted.item()]
+                    conf_score = confidence.item()
+                    inference_time_ms = (end_time - start_time) * 1000
 
-            class_names = checkpoint.get('config').class_names if 'config' in checkpoint else ['Failure', 'Loading', 'Success']
-            transform = get_val_transforms(img_size=224)
-
-            # 获取图片
-            image_extensions = {'.png', '.jpg', '.jpeg', '.PNG', '.JPG', '.JPEG'}
-            image_paths = [p for p in test_images_dir.iterdir() if p.is_file() and p.suffix in image_extensions]
-
-            results = {}
-            class_counts = {name: 0 for name in class_names}
-
-            with RichProgressManager() as progress:
-                task = progress.add_task("处理测试图片", total=len(image_paths))
-                for image_path in image_paths:
-                    try:
-                        image = Image.open(image_path).convert('RGB')
-                        image_tensor = transform(image)
-
-                        # 推理
-                        start_time = time.perf_counter()
-                        with torch.no_grad():
-                            image_tensor = image_tensor.unsqueeze(0).to(device)
-                            outputs = model(image_tensor)
-                            probabilities = torch.nn.functional.softmax(outputs, dim=1)
-                            confidence, predicted = torch.max(probabilities, 1)
-                        end_time = time.perf_counter()
-
-                        pred_class = class_names[predicted.item()]
-                        conf_score = confidence.item()
-                        inference_time_ms = (end_time - start_time) * 1000
-
-                        results[image_path.name] = {
-                            'predicted_class': pred_class,
-                            'confidence': conf_score,
-                            'inference_time_ms': inference_time_ms,
-                            'probabilities': {
-                                class_names[i]: float(probabilities[0][i])
-                                for i in range(len(class_names))
-                            }
+                    results[image_path.name] = {
+                        'predicted_class': pred_class,
+                        'confidence': conf_score,
+                        'inference_time_ms': inference_time_ms,
+                        'probabilities': {
+                            class_names[i]: float(probabilities[0][i])
+                            for i in range(len(class_names))
                         }
+                    }
 
-                        class_counts[pred_class] += 1
-                    except Exception as e:
-                        logger.warning(f"{image_path.name} 处理失败: {e}")
-                    finally:
-                        progress.update("处理测试图片", advance=1)
+                    class_counts[pred_class] += 1
+                except Exception as e:
+                    logger.warning(f"{image_path.name} 处理失败: {e}")
+                finally:
+                    progress.update("处理测试图片", advance=1)
 
+        # 保存JSON
+        with open(test_results_dir / 'predictions.json', 'w', encoding='utf-8') as f:
+            json.dump(results, f, ensure_ascii=False, indent=2)
+
+        # 保存CSV
+        with open(test_results_dir / 'predictions_pytorch.csv', 'w', newline='', encoding='utf-8') as f:
+            writer = csv.DictWriter(f, fieldnames=['filename', 'predicted_class', 'confidence', 'inference_time_ms'])
+            writer.writeheader()
+            for filename, pred in results.items():
+                writer.writerow({
+                    'filename': filename,
+                    'predicted_class': pred['predicted_class'],
+                    'confidence': f"{pred['confidence']:.4f}",
+                    'inference_time_ms': f"{pred['inference_time_ms']:.2f}"
+                })
+
+        # 保存统计摘要
+        total = sum(class_counts.values())
+        with open(test_results_dir / 'summary.txt', 'w', encoding='utf-8') as f:
+            f.write("测试图片分类统计\n")
+            f.write("="*50 + "\n")
+            for class_name in class_names:
+                count = class_counts[class_name]
+                percentage = (count / total * 100) if total > 0 else 0
+                f.write(f"{class_name}: {count}张 ({percentage:.1f}%)\n")
+            f.write(f"总计: {total}张\n")
+
+        # 打印统计
+        rows = []
+        for class_name in class_names:
+            count = class_counts[class_name]
+            percentage = (count / total * 100) if total > 0 else 0
+            rows.append([class_name, f"{count}张", f"{percentage:.1f}%"])
+
+        print_table(
+            title="测试图片分类结果",
+            headers=["类别", "数量", "比例"],
+            rows=rows,
+            caption=f"总计: {total}张"
+        )
+        logger.success("结果已保存: test_results/")
+
+        self.results['test_inference'] = {
+            'total': total,
+            'class_counts': class_counts
+        }
+
+    def _multi_model_inference(self, test_images_dir, test_results_dir):
+        """多模型推理（PyTorch + ONNX + TFLite，支持多精度）"""
+        from scripts.compare_models import ModelComparator
+
+        export_dir = self.run_dir / 'exported_models'
+
+        # 自动检测所有导出的模型
+        models_config = {
+            'pytorch': {'path': str(self.checkpoint_path), 'type': 'checkpoint'}
+        }
+
+        # 扫描ONNX模型（包括不同精度）
+        for onnx_file in export_dir.glob('*.onnx'):
+            # 从文件名提取精度信息
+            if onnx_file.stem == 'model':
+                model_name = 'onnx_fp32'
+            else:
+                # model_fp16.onnx -> onnx_fp16
+                precision = onnx_file.stem.replace('model_', '')
+                model_name = f'onnx_{precision}'
+
+            models_config[model_name] = {'path': str(onnx_file), 'type': 'onnx'}
+            logger.info(f"检测到ONNX模型: {model_name}")
+
+        # 扫描TFLite模型（注意：ai-edge-torch 只支持 FP32）
+        tflite_file = export_dir / 'model.tflite'
+        if tflite_file.exists():
+            models_config['tflite_fp32'] = {'path': str(tflite_file), 'type': 'tflite'}
+            logger.info("检测到TFLite模型: tflite_fp32 (ai-edge-torch 只支持 FP32)")
+
+        if len(models_config) == 1:
+            logger.warning("未检测到导出的模型，只使用PyTorch模型")
+            # 回退到单模型推理
+            self._single_model_inference(test_images_dir, test_results_dir)
+            return
+
+        class_names = ['Failure', 'Loading', 'Success']
+        comparator = ModelComparator(models_config, str(test_images_dir), class_names)
+
+        # 执行对比并保存CSV
+        logger.info(f"开始对比 {len(models_config)} 个模型...")
+        results = comparator.compare(num_samples=None, output_dir=str(test_results_dir))
+
+        if results:
             # 保存JSON
-            with open(test_results_dir / 'predictions.json', 'w', encoding='utf-8') as f:
+            with open(test_results_dir / 'comparison.json', 'w', encoding='utf-8') as f:
                 json.dump(results, f, ensure_ascii=False, indent=2)
 
-            # 保存CSV
-            with open(test_results_dir / 'predictions.csv', 'w', newline='', encoding='utf-8') as f:
-                writer = csv.DictWriter(f, fieldnames=['filename', 'predicted_class', 'confidence', 'inference_time_ms'])
-                writer.writeheader()
-                for filename, pred in results.items():
-                    writer.writerow({
-                        'filename': filename,
-                        'predicted_class': pred['predicted_class'],
-                        'confidence': f"{pred['confidence']:.4f}",
-                        'inference_time_ms': f"{pred['inference_time_ms']:.2f}"
-                    })
+            # 生成Markdown报告
+            from scripts.compare_models import generate_markdown_report
+            generate_markdown_report(results, test_results_dir / 'comparison.md')
 
-            # 保存统计摘要
+            # 统计各类别数量（基于 PyTorch 模型）
+            class_counts = {name: 0 for name in class_names}
+            for result in results['inference_results']:
+                if 'pytorch' in result:
+                    pred_class = result['pytorch']['class']
+                    if pred_class in class_counts:
+                        class_counts[pred_class] += 1
+
             total = sum(class_counts.values())
-            with open(test_results_dir / 'summary.txt', 'w', encoding='utf-8') as f:
-                f.write("测试图片分类统计\n")
-                f.write("="*50 + "\n")
-                for class_name in class_names:
-                    count = class_counts[class_name]
-                    percentage = (count / total * 100) if total > 0 else 0
-                    f.write(f"{class_name}: {count}张 ({percentage:.1f}%)\n")
-                f.write(f"总计: {total}张\n")
 
             # 打印统计
             rows = []
@@ -616,61 +693,32 @@ class PipelineRunner:
                 rows.append([class_name, f"{count}张", f"{percentage:.1f}%"])
 
             print_table(
-                title="测试图片分类结果",
+                title="测试图片分类结果 (基于 PyTorch 模型)",
                 headers=["类别", "数量", "比例"],
                 rows=rows,
                 caption=f"总计: {total}张"
             )
-            logger.success("结果已保存: test_results/")
+
+            logger.success("多模型推理完成，结果已保存: test_results/")
 
             self.results['test_inference'] = {
                 'total': total,
-                'class_counts': class_counts
+                'class_counts': class_counts,
+                'model_comparison': results['summary']
             }
 
-        finally:
-            sys.argv = original_argv
-
     def compare_models_perf(self):
-        """阶段7: 模型对比"""
-        # 检查是否有导出的模型
-        export_dir = self.run_dir / 'exported_models'
+        """阶段7: 模型对比（已合并到测试图片推理阶段）"""
+        # 注意：模型对比功能已经集成到 test_inference() 方法中
+        # 如果使用 --compare-models 参数且存在导出的模型，会自动进行多模型推理和对比
+        logger.info("模型对比功能已集成到测试图片推理阶段")
 
-        onnx_path = export_dir / 'model.onnx'
-        coreml_path = export_dir / 'model.mlpackage'
-
-        if not onnx_path.exists():
-            logger.warning("未找到ONNX模型，跳过对比")
-            return
-
-        # 执行对比
-        from scripts.compare_models import ModelComparator
-
-        models_config = {
-            'pytorch': {'path': str(self.checkpoint_path), 'type': 'checkpoint'},
-            'onnx': {'path': str(onnx_path), 'type': 'onnx'}
-        }
-
-        class_names = ['Failure', 'Loading', 'Success']
-        comparator = ModelComparator(models_config, 'data/processed/test', class_names)
-
-        results = comparator.compare(num_samples=None)
-
-        if results:
-            # 保存结果
-            comparison_dir = self.run_dir / 'model_comparison'
-            comparison_dir.mkdir(exist_ok=True)
-
-            with open(comparison_dir / 'comparison.json', 'w', encoding='utf-8') as f:
-                json.dump(results, f, ensure_ascii=False, indent=2)
-
-            # 生成Markdown报告
-            from scripts.compare_models import generate_markdown_report
-            generate_markdown_report(results, comparison_dir / 'comparison.md')
-
-            logger.success("对比报告已保存: model_comparison/")
-
-            self.results['model_comparison'] = results['summary']
+        # 检查是否已经在 test_inference 中完成了对比
+        if 'model_comparison' in self.results.get('test_inference', {}):
+            logger.success("多模型对比已在测试图片推理阶段完成")
+            logger.info("查看结果: test_results/predictions_comparison.csv")
+        else:
+            logger.info("未启用多模型对比，如需对比请使用 --compare-models 参数")
 
     def generate_summary(self):
         """阶段8: 生成总结报告"""
@@ -828,7 +876,7 @@ def parse_args():
     # 数据相关
     parser.add_argument('--train-data', type=str, default='data/input',
                         help='训练数据路径')
-    parser.add_argument('--test-images', type=str, default='data/test_images2',
+    parser.add_argument('--test-images', type=str, default='data/test_images',
                         help='测试图片路径')
     parser.add_argument('--img-size', type=int, default=224,
                         help='输入图像尺寸')
@@ -839,7 +887,7 @@ def parse_args():
     parser.add_argument('--export-formats', type=str, default='onnx tflite',
                         help='导出格式（空格分隔）')
     parser.add_argument('--quantize', action='store_true',
-                        help='量化模型')
+                        help='量化模型（向后兼容）')
 
     # 输出相关
     parser.add_argument('--output-base', type=str, default='data/output/runs',

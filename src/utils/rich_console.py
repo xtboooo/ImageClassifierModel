@@ -1,21 +1,17 @@
 """Rich 终端美化工具模块"""
-from rich.console import Console
-from rich.progress import (
-    Progress,
-    SpinnerColumn,
-    BarColumn,
-    TextColumn,
-    TimeRemainingColumn,
-    TaskProgressColumn
-)
-from rich.table import Table
-from rich.panel import Panel
-from rich.syntax import Syntax
-from rich.tree import Tree
-from typing import List, Dict, Any, Optional
 import io
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
+from rich.console import Console
+from rich.panel import Panel
+from rich.progress import (BarColumn, Progress, SpinnerColumn,
+                           TaskProgressColumn, TextColumn, TimeRemainingColumn)
+from rich.syntax import Syntax
+from rich.table import Table
+from rich.tree import Tree
+
+from .logger import logger
 
 # 全局 Console 实例(单例模式)
 console = Console()
@@ -305,7 +301,7 @@ def print_info(message: str):
     Args:
         message: 消息内容
     """
-    console.print(f"[cyan]ℹ[/cyan] {message}")
+    logger.info(f"ℹ {message}")
 
 
 def print_success(message: str):
@@ -315,7 +311,7 @@ def print_success(message: str):
     Args:
         message: 消息内容
     """
-    console.print(f"[green]✓[/green] {message}")
+    logger.info(message)
 
 
 def print_warning(message: str):
@@ -325,7 +321,7 @@ def print_warning(message: str):
     Args:
         message: 消息内容
     """
-    console.print(f"[yellow]⚠[/yellow] {message}")
+    logger.warning(message)
 
 
 def print_error(message: str):
@@ -335,7 +331,7 @@ def print_error(message: str):
     Args:
         message: 消息内容
     """
-    console.print(f"[red]✗[/red] {message}")
+    logger.error(message)
 
 
 def print_stage_header(stage_num: int, total_stages: int, title: str, description: str = None):

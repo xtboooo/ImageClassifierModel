@@ -21,6 +21,7 @@ cd "$PROJECT_ROOT"
 # 参数默认值
 CHECKPOINT="${1:-data/output/checkpoints/best_model.pth}"
 OUTPUT="${2:-data/output/exported_models/model_docker.tflite}"
+PRECISION="${3:-fp32}"  # 精度参数：fp32, fp16, int8
 
 # Docker 镜像名称
 DOCKER_IMAGE="image-classifier-tflite:latest"
@@ -32,6 +33,7 @@ echo ""
 echo -e "项目根目录: ${PROJECT_ROOT}"
 echo -e "Checkpoint:  ${CHECKPOINT}"
 echo -e "输出路径:    ${OUTPUT}"
+echo -e "精度:        ${PRECISION}"
 echo ""
 
 # ============================================
@@ -162,7 +164,7 @@ print('初始化导出器...')
 exporter = TFLiteExporter(model, img_size=224, class_names=class_names)
 
 print('开始导出...')
-exporter.export('/workspace/output/$OUTPUT_NAME')
+exporter.export('/workspace/output/$OUTPUT_NAME', precision='$PRECISION')
 
 print('\n✅ 导出完成！')
 "

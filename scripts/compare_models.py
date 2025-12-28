@@ -215,8 +215,13 @@ class ModelComparator:
 
         return total_size / (1024 * 1024)
 
-    def compare(self, num_samples=None):
-        """执行对比"""
+    def compare(self, num_samples=None, output_dir=None):
+        """执行对比
+
+        Args:
+            num_samples: 限制测试样本数量
+            output_dir: 输出目录（如果提供，会保存CSV文件）
+        """
         if not self.engines:
             print_error("没有成功加载任何模型，无法对比")
             return None
@@ -303,6 +308,10 @@ class ModelComparator:
 
         results['summary']['consistency'] = consistency
 
+        # 保存CSV文件（如果提供了输出目录）
+        if output_dir:
+            self._save_csv_results(results, output_dir)
+
         return results
 
     def _calculate_consistency(self, predictions):
@@ -339,6 +348,77 @@ class ModelComparator:
             consistency['all_models'] = f"{full_consistency:.1f}%"
 
         return consistency
+
+    def _save_csv_results(self, results, output_dir):
+        """保存CSV结果文件
+
+        Args:
+            results: 对比结果字典
+            output_dir: 输出目录
+        """
+        import csv
+
+        output_path = Path(output_dir)
+        output_path.mkdir(parents=True, exist_ok=True)
+
+        model_names = list(results['model_info'].keys())
+
+        # 1. 为每个模型生成单独的CSV文件
+        for model_name in model_names:
+            csv_path = output_path / f'predictions_{model_name}.csv'
+
+            with open(csv_path, 'w', newline='', encoding='utf-8') as f:
+                writer = csv.DictWriter(
+                    f,
+                    fieldnames=['filename', 'predicted_class', 'confidence', 'inference_time_ms']
+                )
+                writer.writeheader()
+
+                for result in results['inference_results']:
+                    if model_name in result:
+                        writer.writerow({
+                            'filename': result['image'],
+                            'predicted_class': result[model_name]['class'],
+                            'confidence': result[model_name]['confidence'],
+                            'inference_time_ms': result[model_name]['time_ms']
+                        })
+
+            print_success(f"已保存 {model_name} 预测结果: {csv_path.name}")
+
+        # 2. 生成总的比较CSV文件
+        comparison_csv_path = output_path / 'predictions_comparison.csv'
+
+        with open(comparison_csv_path, 'w', newline='', encoding='utf-8') as f:
+            # 构建表头
+            fieldnames = ['filename']
+            for model_name in model_names:
+                fieldnames.extend([
+                    f'{model_name}_class',
+                    f'{model_name}_confidence',
+                    f'{model_name}_time_ms'
+                ])
+
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+
+            # 写入数据
+            for result in results['inference_results']:
+                row = {'filename': result['image']}
+
+                for model_name in model_names:
+                    if model_name in result:
+                        row[f'{model_name}_class'] = result[model_name]['class']
+                        row[f'{model_name}_confidence'] = result[model_name]['confidence']
+                        row[f'{model_name}_time_ms'] = result[model_name]['time_ms']
+                    else:
+                        row[f'{model_name}_class'] = 'N/A'
+                        row[f'{model_name}_confidence'] = 'N/A'
+                        row[f'{model_name}_time_ms'] = 'N/A'
+
+                writer.writerow(row)
+
+        print_success(f"已保存比较结果: {comparison_csv_path.name}")
+        logger.info("CSV文件已保存", output_dir=str(output_path))
 
 
 def generate_markdown_report(results, output_path):
