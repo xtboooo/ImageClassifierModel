@@ -44,7 +44,7 @@ class TrainingConfig:
     unfreeze_from_layer: int = 14  # 从第14层开始解冻
 
     # 路径
-    data_root: Path = Path('data/processed')
+    data_root: Path = Path('data/training_data')
     output_dir: Path = Path('data/output')
     checkpoint_dir: Path = Path('data/output/checkpoints')
     log_dir: Path = Path('data/output/logs')
@@ -82,7 +82,7 @@ class BaseConfig:
 
     # 数据集路径
     raw_data_dir: Path = Path('data/input')
-    processed_data_dir: Path = Path('data/processed')
+    processed_data_dir: Path = Path('data/training_data')
 
     # 数据划分比例
     train_ratio: float = 0.7

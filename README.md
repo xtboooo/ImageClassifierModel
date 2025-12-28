@@ -396,10 +396,10 @@ data/input/Data1227-2029/
 uv run python src/data/split_data.py
 ```
 
-划分后的数据将保存到 `data/processed/` 目录：
+划分后的数据将保存到 `data/training_data/` 目录：
 
 ```
-data/processed/
+data/training_data/
 ├── train/      # 训练集
 ├── val/        # 验证集
 └── test/       # 测试集
@@ -1001,7 +1001,7 @@ ImageClassifierModel/
 │   └── export_tflite.sh
 ├── data/
 │   ├── input/          # 原始数据
-│   ├── processed/      # 划分后的数据
+│   ├── training_data/  # 划分后的数据
 │   └── output/         # 训练输出
 │       ├── runs/       # 训练运行记录（按时间戳）
 │       │   └── <timestamp>/

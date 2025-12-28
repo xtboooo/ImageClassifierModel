@@ -176,7 +176,7 @@ class PipelineRunner:
 
     def prepare_data(self):
         """阶段2: 数据准备"""
-        processed_dir = Path('data/processed')
+        processed_dir = Path('data/training_data')
 
         # 检查是否需要重新划分
         if not processed_dir.exists() or self.args.force_split:
@@ -228,12 +228,12 @@ class PipelineRunner:
             num_epochs=self.args.epochs,
             batch_size=self.args.batch_size,
             learning_rate=self.args.lr,
-            data_root='data/processed'
+            data_root='data/training_data'
         )
 
         # 创建数据加载器
         train_loader, val_loader, test_loader = create_dataloaders(
-            data_root='data/processed',
+            data_root='data/training_data',
             batch_size=self.args.batch_size,
             num_workers=4,
             img_size=self.args.img_size
@@ -268,7 +268,7 @@ class PipelineRunner:
 
             # 创建临时参数
             train_args = ap.Namespace(
-                data_root='data/processed',
+                data_root='data/training_data',
                 model=self.args.model,
                 pretrained=not self.args.no_pretrained,
                 batch_size=self.args.batch_size,
@@ -339,7 +339,7 @@ class PipelineRunner:
 
         # 加载测试集
         _, _, test_loader = create_dataloaders(
-            'data/processed',
+            'data/training_data',
             batch_size=self.args.batch_size,
             num_workers=4,
             img_size=self.args.img_size

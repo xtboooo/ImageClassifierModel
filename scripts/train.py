@@ -46,8 +46,8 @@ def parse_args():
                         help='Dropout 比例 (默认: 0.3)')
 
     # 数据参数
-    parser.add_argument('--data-root', type=str, default='data/processed',
-                        help='数据根目录 (默认: data/processed)')
+    parser.add_argument('--data-root', type=str, default='data/training_data',
+                        help='数据根目录 (默认: data/training_data)')
     parser.add_argument('--img-size', type=int, default=224,
                         help='图像尺寸 (默认: 224)')
 

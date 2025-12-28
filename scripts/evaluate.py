@@ -26,7 +26,7 @@ def parse_args():
 
     parser.add_argument('--checkpoint', type=str, required=True,
                         help='模型检查点路径')
-    parser.add_argument('--data-root', type=str, default='data/processed',
+    parser.add_argument('--data-root', type=str, default='data/training_data',
                         help='数据根目录')
     parser.add_argument('--batch-size', type=int, default=16,
                         help='批次大小')
