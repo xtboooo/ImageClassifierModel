@@ -274,7 +274,8 @@ class ModelComparator:
                         img_result[model_name] = {
                             'class': self.class_names[pred['class_idx']],
                             'confidence': f"{pred['confidence']:.4f}",
-                            'time_ms': f"{pred['inference_time_ms']:.2f}"
+                            'time_ms': f"{pred['inference_time_ms']:.2f}",
+                            'probabilities': pred['probabilities']
                         }
 
                         inference_times[model_name].append(pred['inference_time_ms'])
@@ -363,25 +364,39 @@ class ModelComparator:
 
         model_names = list(results['model_info'].keys())
 
+        # 按 filename 排序
+        sorted_results = sorted(results['inference_results'], key=lambda x: x['image'])
+
         # 1. 为每个模型生成单独的CSV文件
         for model_name in model_names:
             csv_path = output_path / f'predictions_{model_name}.csv'
 
+            # 构建表头：filename, predicted_class, confidence, prob_Failure, prob_Loading, prob_Success, inference_time_ms
+            fieldnames = ['filename', 'predicted_class', 'confidence']
+            for class_name in self.class_names:
+                fieldnames.append(f'prob_{class_name}')
+            fieldnames.append('inference_time_ms')
+
             with open(csv_path, 'w', newline='', encoding='utf-8') as f:
-                writer = csv.DictWriter(
-                    f,
-                    fieldnames=['filename', 'predicted_class', 'confidence', 'inference_time_ms']
-                )
+                writer = csv.DictWriter(f, fieldnames=fieldnames)
                 writer.writeheader()
 
-                for result in results['inference_results']:
+                for result in sorted_results:
                     if model_name in result:
-                        writer.writerow({
+                        row = {
                             'filename': result['image'],
                             'predicted_class': result[model_name]['class'],
                             'confidence': result[model_name]['confidence'],
                             'inference_time_ms': result[model_name]['time_ms']
-                        })
+                        }
+
+                        # 添加每个类别的概率
+                        if 'probabilities' in result[model_name]:
+                            probs = result[model_name]['probabilities']
+                            for i, class_name in enumerate(self.class_names):
+                                row[f'prob_{class_name}'] = f"{probs[i]:.4f}"
+
+                        writer.writerow(row)
 
             print_success(f"已保存 {model_name} 预测结果: {csv_path.name}")
 
@@ -389,20 +404,20 @@ class ModelComparator:
         comparison_csv_path = output_path / 'predictions_comparison.csv'
 
         with open(comparison_csv_path, 'w', newline='', encoding='utf-8') as f:
-            # 构建表头
+            # 构建表头：filename, model1_class, model1_confidence, model1_prob_Failure, ..., model1_time_ms, model2_...
             fieldnames = ['filename']
             for model_name in model_names:
-                fieldnames.extend([
-                    f'{model_name}_class',
-                    f'{model_name}_confidence',
-                    f'{model_name}_time_ms'
-                ])
+                fieldnames.append(f'{model_name}_class')
+                fieldnames.append(f'{model_name}_confidence')
+                for class_name in self.class_names:
+                    fieldnames.append(f'{model_name}_prob_{class_name}')
+                fieldnames.append(f'{model_name}_time_ms')
 
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
 
-            # 写入数据
-            for result in results['inference_results']:
+            # 写入数据（使用排序后的结果）
+            for result in sorted_results:
                 row = {'filename': result['image']}
 
                 for model_name in model_names:
@@ -410,9 +425,17 @@ class ModelComparator:
                         row[f'{model_name}_class'] = result[model_name]['class']
                         row[f'{model_name}_confidence'] = result[model_name]['confidence']
                         row[f'{model_name}_time_ms'] = result[model_name]['time_ms']
+
+                        # 添加每个类别的概率
+                        if 'probabilities' in result[model_name]:
+                            probs = result[model_name]['probabilities']
+                            for i, class_name in enumerate(self.class_names):
+                                row[f'{model_name}_prob_{class_name}'] = f"{probs[i]:.4f}"
                     else:
                         row[f'{model_name}_class'] = 'N/A'
                         row[f'{model_name}_confidence'] = 'N/A'
+                        for class_name in self.class_names:
+                            row[f'{model_name}_prob_{class_name}'] = 'N/A'
                         row[f'{model_name}_time_ms'] = 'N/A'
 
                 writer.writerow(row)

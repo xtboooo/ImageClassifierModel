@@ -580,17 +580,34 @@ class PipelineRunner:
         with open(test_results_dir / 'predictions.json', 'w', encoding='utf-8') as f:
             json.dump(results, f, ensure_ascii=False, indent=2)
 
-        # 保存CSV
+        # 保存CSV（按 filename 排序，添加每个类别的概率）
+        # 构建表头：filename, predicted_class, confidence, prob_Failure, prob_Loading, prob_Success, inference_time_ms
+        fieldnames = ['filename', 'predicted_class', 'confidence']
+        for class_name in class_names:
+            fieldnames.append(f'prob_{class_name}')
+        fieldnames.append('inference_time_ms')
+
         with open(test_results_dir / 'predictions_pytorch.csv', 'w', newline='', encoding='utf-8') as f:
-            writer = csv.DictWriter(f, fieldnames=['filename', 'predicted_class', 'confidence', 'inference_time_ms'])
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
-            for filename, pred in results.items():
-                writer.writerow({
+
+            # 按 filename 排序
+            sorted_items = sorted(results.items(), key=lambda x: x[0])
+
+            for filename, pred in sorted_items:
+                row = {
                     'filename': filename,
                     'predicted_class': pred['predicted_class'],
                     'confidence': f"{pred['confidence']:.4f}",
                     'inference_time_ms': f"{pred['inference_time_ms']:.2f}"
-                })
+                }
+
+                # 添加每个类别的概率
+                if 'probabilities' in pred:
+                    for class_name in class_names:
+                        row[f'prob_{class_name}'] = f"{pred['probabilities'][class_name]:.4f}"
+
+                writer.writerow(row)
 
         # 保存统计摘要
         total = sum(class_counts.values())
