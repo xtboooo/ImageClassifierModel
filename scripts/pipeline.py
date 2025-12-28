@@ -290,13 +290,13 @@ class PipelineRunner:
             logger.info(f"训练模式: 标准训练 ({self.args.epochs} epochs)")
             history = trainer.train()
 
-        # 保存checkpoint到运行目录
-        checkpoint_src = Path('data/output/checkpoints/best_model.pth')
+        # checkpoint已由训练脚本直接保存到运行目录
         self.checkpoint_path = self.run_dir / 'checkpoints' / 'best_model.pth'
 
-        if checkpoint_src.exists():
-            shutil.copy(checkpoint_src, self.checkpoint_path)
+        if self.checkpoint_path.exists():
             logger.success("模型已保存: checkpoints/best_model.pth")
+        else:
+            raise FileNotFoundError(f"训练完成但未找到模型文件: {self.checkpoint_path}")
 
         # 记录训练结果
         if history:
@@ -310,16 +310,17 @@ class PipelineRunner:
 
     def load_existing_model(self):
         """加载已有模型"""
-        if self.args.checkpoint:
-            src_checkpoint = Path(self.args.checkpoint)
-        else:
-            src_checkpoint = Path('data/output/checkpoints/best_model.pth')
+        if not self.args.checkpoint:
+            raise ValueError("请使用 --checkpoint 参数指定模型路径")
+
+        src_checkpoint = Path(self.args.checkpoint)
 
         if not src_checkpoint.exists():
             raise FileNotFoundError(f"找不到模型文件: {src_checkpoint}")
 
         # 复制到运行目录
         self.checkpoint_path = self.run_dir / 'checkpoints' / 'best_model.pth'
+        self.checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy(src_checkpoint, self.checkpoint_path)
 
         logger.info(f"使用模型: {src_checkpoint}")

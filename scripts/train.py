@@ -75,7 +75,7 @@ def parse_args():
     return parser.parse_args()
 
 
-def train_single_stage(args):
+def train_single_stage(args, run_dir):
     """单阶段训练（标准流程）"""
     # 创建配置
     config = TrainingConfig(
@@ -90,7 +90,9 @@ def train_single_stage(args):
         num_workers=args.num_workers,
         early_stopping_patience=args.patience,
         data_root=Path(args.data_root),
-        pretrained=args.pretrained
+        pretrained=args.pretrained,
+        checkpoint_dir=run_dir / 'checkpoints',
+        log_dir=run_dir / 'logs'
     )
 
     # 打印设备信息
@@ -122,7 +124,7 @@ def train_single_stage(args):
     return trainer, history
 
 
-def train_two_stage(args):
+def train_two_stage(args, run_dir):
     """两阶段训练（冻结主干 → 微调）"""
     # ========== 阶段 1: 冻结主干，仅训练分类头 ==========
     print_stage_header(1, 2, "冻结主干网络，训练分类头", "仅训练分类头，保持主干网络参数不变")
@@ -140,7 +142,9 @@ def train_two_stage(args):
         num_workers=args.num_workers,
         early_stopping_patience=args.patience,
         data_root=Path(args.data_root),
-        pretrained=args.pretrained
+        pretrained=args.pretrained,
+        checkpoint_dir=run_dir / 'checkpoints',
+        log_dir=run_dir / 'logs'
     )
 
     # 打印设备信息
@@ -186,7 +190,9 @@ def train_two_stage(args):
         num_workers=args.num_workers,
         early_stopping_patience=args.patience,
         data_root=Path(args.data_root),
-        pretrained=False  # 不重新加载预训练权重
+        pretrained=False,  # 不重新加载预训练权重
+        checkpoint_dir=run_dir / 'checkpoints',
+        log_dir=run_dir / 'logs'
     )
 
     # 训练阶段2（使用解冻后的模型）
@@ -235,9 +241,9 @@ def main():
 
     try:
         if args.two_stage:
-            trainer, history = train_two_stage(args)
+            trainer, history = train_two_stage(args, run_dir)
         else:
-            trainer, history = train_single_stage(args)
+            trainer, history = train_single_stage(args, run_dir)
 
         checkpoint_path = trainer.config.checkpoint_dir / 'best_model.pth'
         logger.success("训练成功完成!")

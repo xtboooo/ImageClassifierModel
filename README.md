@@ -64,11 +64,15 @@ uv run python src/data/split_data.py
 # 2. 快速训练（5 轮测试）
 uv run python scripts/train.py --epochs 5 --batch-size 8
 
+# 训练完成后会显示模型路径，例如：data/output/runs/20250128_143025/checkpoints/best_model.pth
+# 使用该路径进行后续操作（替换下面的 <run_dir> 为实际目录名）
+
 # 3. 评估模型
-uv run python scripts/evaluate.py --checkpoint data/output/checkpoints/best_model.pth
+LATEST_RUN=$(ls -t data/output/runs/ | head -n 1)
+uv run python scripts/evaluate.py --checkpoint data/output/runs/$LATEST_RUN/checkpoints/best_model.pth
 
 # 4. 导出模型
-uv run python scripts/export.py --checkpoint data/output/checkpoints/best_model.pth --formats onnx
+uv run python scripts/export.py --checkpoint data/output/runs/$LATEST_RUN/checkpoints/best_model.pth --formats onnx
 ```
 
 ---
@@ -222,7 +226,7 @@ docker images | grep image-classifier-tflite
 ```bash
 # 使用 Docker 导出脚本测试（需要先训练模型）
 bash docker/export_tflite.sh \
-    data/output/checkpoints/best_model.pth \
+    data/output/runs/$LATEST_RUN/checkpoints/best_model.pth \
     data/output/exported_models/model.tflite
 ```
 
@@ -555,7 +559,7 @@ uv run python scripts/pipeline.py \
 
 ### 训练输出
 
-训练完成后，输出目录结构：
+训练完成后，所有文件保存在带时间戳的运行目录：
 
 ```
 data/output/runs/<timestamp>/
@@ -567,9 +571,14 @@ data/output/runs/<timestamp>/
 └── config.json                  # 训练配置
 ```
 
-最佳模型也会复制到：
-```
-data/output/checkpoints/best_model.pth
+**查找最新模型**：
+```bash
+# 查看所有训练运行
+ls -lt data/output/runs/
+
+# 使用最新的模型（替换 <timestamp> 为实际时间戳）
+LATEST_RUN=$(ls -t data/output/runs/ | head -n 1)
+echo "最新模型: data/output/runs/$LATEST_RUN/checkpoints/best_model.pth"
 ```
 
 ### 常见训练问题
@@ -602,6 +611,13 @@ uv run python -c "import torch; print('MPS可用:', torch.backends.mps.is_availa
 
 ## 模型导出指南
 
+**前置准备**：设置模型路径变量
+```bash
+# 获取最新训练运行的目录
+LATEST_RUN=$(ls -t data/output/runs/ | head -n 1)
+echo "使用模型: data/output/runs/$LATEST_RUN/checkpoints/best_model.pth"
+```
+
 ### 导出格式说明
 
 | 格式 | 用途 | 优势 | 文件大小 |
@@ -616,7 +632,7 @@ uv run python -c "import torch; print('MPS可用:', torch.backends.mps.is_availa
 
 ```bash
 uv run python scripts/export.py \
-    --checkpoint data/output/checkpoints/best_model.pth \
+    --checkpoint data/output/runs/$LATEST_RUN/checkpoints/best_model.pth \
     --formats onnx
 ```
 
@@ -638,7 +654,7 @@ print(f'输出: {session.get_outputs()[0].name} - {session.get_outputs()[0].shap
 
 ```bash
 uv run python scripts/export.py \
-    --checkpoint data/output/checkpoints/best_model.pth \
+    --checkpoint data/output/runs/$LATEST_RUN/checkpoints/best_model.pth \
     --formats coreml
 ```
 
@@ -646,7 +662,7 @@ uv run python scripts/export.py \
 
 ```bash
 uv run python scripts/export.py \
-    --checkpoint data/output/checkpoints/best_model.pth \
+    --checkpoint data/output/runs/$LATEST_RUN/checkpoints/best_model.pth \
     --formats coreml \
     --quantize  # 开启 FLOAT16 量化
 ```
@@ -698,7 +714,7 @@ uv run python scripts/export.py \
 # 确保 Docker Desktop 已启动
 
 bash docker/export_tflite.sh \
-    data/output/checkpoints/best_model.pth \
+    data/output/runs/$LATEST_RUN/checkpoints/best_model.pth \
     data/output/exported_models/model.tflite
 ```
 
@@ -764,7 +780,7 @@ docker build --platform linux/amd64 -t image-classifier-tflite:latest -f docker/
 
 ```bash
 uv run python scripts/export.py \
-    --checkpoint data/output/checkpoints/best_model.pth \
+    --checkpoint data/output/runs/$LATEST_RUN/checkpoints/best_model.pth \
     --formats onnx coreml tflite \
     --quantize  # CoreML 量化
 ```
@@ -797,7 +813,7 @@ data/output/exported_models/
 
 ```bash
 uv run python scripts/evaluate.py \
-    --checkpoint data/output/checkpoints/best_model.pth
+    --checkpoint data/output/runs/$LATEST_RUN/checkpoints/best_model.pth
 ```
 
 ### 评估输出
@@ -882,7 +898,7 @@ uv run pytest tests/ --cov=src --cov-report=html
 
 ```bash
 uv run python scripts/batch_inference.py \
-    --checkpoint data/output/checkpoints/best_model.pth \
+    --checkpoint data/output/runs/$LATEST_RUN/checkpoints/best_model.pth \
     --input-dir data/test_images2 \
     --output predictions.json \
     --measure-time
@@ -892,7 +908,7 @@ uv run python scripts/batch_inference.py \
 
 ```bash
 uv run python scripts/batch_inference.py \
-    --checkpoint data/output/checkpoints/best_model.pth \
+    --checkpoint data/output/runs/$LATEST_RUN/checkpoints/best_model.pth \
     --input-dir data/test_images2 \
     --copy-to-folders \
     --output-dir data/classified_images
@@ -912,7 +928,7 @@ data/classified_images/
 
 ```bash
 uv run python scripts/compare_models.py \
-    --checkpoint data/output/checkpoints/best_model.pth \
+    --checkpoint data/output/runs/$LATEST_RUN/checkpoints/best_model.pth \
     --onnx data/output/exported_models/model.onnx \
     --tflite data/output/exported_models/model.tflite \
     --test-dir data/processed/test
@@ -987,10 +1003,14 @@ ImageClassifierModel/
 │   ├── input/          # 原始数据
 │   ├── processed/      # 划分后的数据
 │   └── output/         # 训练输出
-│       ├── checkpoints/
-│       ├── exported_models/
-│       ├── metrics/
-│       └── visualizations/
+│       ├── runs/       # 训练运行记录（按时间戳）
+│       │   └── <timestamp>/
+│       │       ├── checkpoints/    # 模型权重
+│       │       ├── logs/           # 训练日志
+│       │       └── config.json     # 训练配置
+│       ├── exported_models/        # 导出的模型
+│       ├── metrics/                # 评估指标
+│       └── visualizations/         # 可视化图表
 └── pyproject.toml      # 项目配置
 ```
 
@@ -1061,8 +1081,9 @@ python -c "import torch; print(torch.backends.mps.is_available())"
 
 **Q: 训练过程中断**
 ```
-训练会自动保存最佳模型到 data/output/checkpoints/best_model.pth
+训练会自动保存最佳模型到 runs/<timestamp>/checkpoints/best_model.pth
 可继续使用该 checkpoint 进行评估和导出
+训练完成时会显示完整路径
 ```
 
 **Q: 验证集准确率低**

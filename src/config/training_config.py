@@ -64,9 +64,12 @@ class TrainingConfig:
         if self.class_names is None:
             self.class_names = ['Failure', 'Loading', 'Success']
 
-        # 创建必要的目录
-        self.checkpoint_dir.mkdir(parents=True, exist_ok=True)
-        self.log_dir.mkdir(parents=True, exist_ok=True)
+        # 创建目录（如果使用的是 runs 目录，由训练脚本创建）
+        # 只在必要时创建目录，避免在根目录创建 checkpoints 和 logs
+        if 'runs' in str(self.checkpoint_dir):
+            # runs 目录下的路径，创建目录
+            self.checkpoint_dir.mkdir(parents=True, exist_ok=True)
+            self.log_dir.mkdir(parents=True, exist_ok=True)
 
 
 @dataclass
