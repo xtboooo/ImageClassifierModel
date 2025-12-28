@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 from pathlib import Path
+from src.utils.logger import logger
 
 # 设置中文字体和样式
 plt.rcParams['font.sans-serif'] = ['Arial Unicode MS', 'SimHei', 'DejaVu Sans']
@@ -63,7 +64,7 @@ class Visualizer:
             save_path = Path(save_path)
             save_path.parent.mkdir(parents=True, exist_ok=True)
             plt.savefig(save_path, dpi=300, bbox_inches='tight')
-            print(f"训练曲线已保存到: {save_path}")
+            logger.info(f"训练曲线已保存到: {save_path}")
 
         plt.close()
 
@@ -116,7 +117,7 @@ class Visualizer:
             save_path = Path(save_path)
             save_path.parent.mkdir(parents=True, exist_ok=True)
             plt.savefig(save_path, dpi=300, bbox_inches='tight')
-            print(f"混淆矩阵已保存到: {save_path}")
+            logger.info(f"混淆矩阵已保存到: {save_path}")
 
         plt.close()
 
@@ -170,7 +171,7 @@ class Visualizer:
             save_path = Path(save_path)
             save_path.parent.mkdir(parents=True, exist_ok=True)
             plt.savefig(save_path, dpi=300, bbox_inches='tight')
-            print(f"每类指标图已保存到: {save_path}")
+            logger.info(f"每类指标图已保存到: {save_path}")
 
         plt.close()
 
@@ -187,7 +188,7 @@ class Visualizer:
         output_dir = Path(output_dir)
         output_dir.mkdir(parents=True, exist_ok=True)
 
-        print("\n生成可视化图表...")
+        logger.info("生成可视化图表...")
 
         # 训练历史
         Visualizer.plot_training_history(
@@ -210,4 +211,4 @@ class Visualizer:
             save_path=output_dir / 'per_class_metrics.png'
         )
 
-        print(f"所有图表已保存到: {output_dir}\n")
+        logger.info(f"所有图表已保存到: {output_dir}")

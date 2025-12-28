@@ -8,6 +8,7 @@ dependencies = [
     # Core ML frameworks
     "torch>=2.0.0",
     "torchvision>=0.15.0",
+    "tensorflow>=2.16.0",
     # Data processing
     "pillow>=10.0.0",
     "numpy>=1.24.0",
