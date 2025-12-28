@@ -19,7 +19,7 @@ class ONNXExporter:
         self.model = model
         self.img_size = img_size
 
-    def export(self, save_path, opset_version=14):
+    def export(self, save_path, opset_version=18):
         """
         导出为 ONNX 格式（单张图片输入）
 
