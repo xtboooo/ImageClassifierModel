@@ -285,7 +285,7 @@ class PipelineRunner:
                 weight_decay=1e-4
             )
 
-            _, history = train_two_stage(train_args)
+            _, history = train_two_stage(train_args, self.run_dir)
         else:
             logger.info(f"训练模式: 标准训练 ({self.args.epochs} epochs)")
             history = trainer.train()
