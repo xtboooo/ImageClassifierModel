@@ -47,16 +47,7 @@ htmlcov/
 .hypothesis/
 
 # Data
-data/input/
-data/processed/
-# data/output/checkpoints/*.pth
-data/output/logs/
-# data/output/metrics/
-# data/output/visualizations/
-data/test_images/
-data/output/classified_images/
-!data/output/checkpoints/.gitkeep
-!data/output/logs/.gitkeep
+data/
 prompts.txt
 
 # Models
