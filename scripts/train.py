@@ -2,6 +2,7 @@
 import argparse
 import sys
 from pathlib import Path
+from datetime import datetime
 
 # 添加项目根目录到路径
 project_root = Path(__file__).parent.parent
@@ -13,6 +14,10 @@ from src.data.dataloader import create_dataloaders
 from src.models.model_factory import create_model
 from src.training.trainer import Trainer
 from src.utils.device import print_device_info
+
+# 导入日志和Rich工具
+from src.utils.logger import setup_logger, logger
+from src.utils.rich_console import print_header, print_table, print_panel, print_stage_header
 
 
 def parse_args():
@@ -92,7 +97,7 @@ def train_single_stage(args):
     print_device_info()
 
     # 创建数据加载器
-    print("加载数据集...")
+    logger.info("加载数据集...")
     train_loader, val_loader, _ = create_dataloaders(
         config.data_root,
         batch_size=config.batch_size,
@@ -120,9 +125,7 @@ def train_single_stage(args):
 def train_two_stage(args):
     """两阶段训练（冻结主干 → 微调）"""
     # ========== 阶段 1: 冻结主干，仅训练分类头 ==========
-    print("\n" + "🔥"*35)
-    print("阶段 1: 冻结主干网络，训练分类头")
-    print("🔥"*35 + "\n")
+    print_stage_header(1, 2, "冻结主干网络，训练分类头", "仅训练分类头，保持主干网络参数不变")
 
     # 创建配置（阶段1）
     config_stage1 = TrainingConfig(
@@ -144,7 +147,7 @@ def train_two_stage(args):
     print_device_info()
 
     # 加载数据
-    print("加载数据集...")
+    logger.info("加载数据集...")
     train_loader, val_loader, _ = create_dataloaders(
         config_stage1.data_root,
         batch_size=config_stage1.batch_size,
@@ -165,9 +168,7 @@ def train_two_stage(args):
     history_stage1 = trainer_stage1.train()
 
     # ========== 阶段 2: 解冻主干，微调 ==========
-    print("\n" + "🚀"*35)
-    print("阶段 2: 解冻主干网络，微调模型")
-    print("🚀"*35 + "\n")
+    print_stage_header(2, 2, "解冻主干网络，微调模型", "使用较小学习率微调整个模型")
 
     # 解冻主干网络
     model.unfreeze_backbone(unfreeze_from_layer=args.unfreeze_from)
@@ -207,16 +208,30 @@ def main():
     """主函数"""
     args = parse_args()
 
-    print("\n" + "="*70)
-    print("ImageClassifierModel - 模型训练")
-    print("="*70)
-    print(f"模型: {args.model}")
-    print(f"Epochs: {args.epochs if not args.two_stage else f'{args.stage1_epochs} + {args.stage2_epochs}'}")
-    print(f"Batch Size: {args.batch_size}")
-    print(f"Learning Rate: {args.lr}")
-    print(f"预训练: {'是' if args.pretrained else '否'}")
-    print(f"两阶段训练: {'是' if args.two_stage else '否'}")
-    print("="*70 + "\n")
+    # 创建运行目录并初始化日志系统
+    run_dir = Path("data/output/runs") / datetime.now().strftime("%Y%m%d_%H%M%S")
+    run_dir.mkdir(parents=True, exist_ok=True)
+    setup_logger(run_dir, console_level="INFO", file_level="DEBUG")
+
+    print_header("ImageClassifierModel - 模型训练")
+
+    # 准备配置数据
+    epochs_display = args.epochs if not args.two_stage else f"{args.stage1_epochs} + {args.stage2_epochs}"
+    rows = [
+        ["模型", args.model],
+        ["Epochs", epochs_display],
+        ["Batch Size", args.batch_size],
+        ["Learning Rate", args.lr],
+        ["预训练", "是" if args.pretrained else "否"],
+        ["两阶段训练", "是" if args.two_stage else "否"],
+        ["输出目录", str(run_dir)]
+    ]
+
+    print_table(
+        title="训练配置",
+        headers=["参数", "值"],
+        rows=rows
+    )
 
     try:
         if args.two_stage:
@@ -224,16 +239,23 @@ def main():
         else:
             trainer, history = train_single_stage(args)
 
-        print("\n✅ 训练成功完成!")
-        print(f"最佳模型已保存到: {trainer.config.checkpoint_dir / 'best_model.pth'}")
+        checkpoint_path = trainer.config.checkpoint_dir / 'best_model.pth'
+        logger.success("训练成功完成!")
+        logger.success(f"最佳模型已保存到: {checkpoint_path}")
+
+        print_panel(
+            f"[bold green]训练成功完成![/bold green]\n\n"
+            f"最佳模型路径: [yellow]{checkpoint_path}[/yellow]\n"
+            f"日志目录: [cyan]{run_dir}/logs[/cyan]",
+            title="训练总结",
+            style="green"
+        )
 
     except KeyboardInterrupt:
-        print("\n\n⚠️  训练被用户中断")
+        logger.warning("训练被用户中断")
         sys.exit(1)
     except Exception as e:
-        print(f"\n\n❌ 训练失败: {e}")
-        import traceback
-        traceback.print_exc()
+        logger.exception("训练失败")
         sys.exit(1)
 
 

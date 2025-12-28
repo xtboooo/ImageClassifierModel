@@ -4,6 +4,8 @@ import onnx
 import onnxruntime as ort
 import numpy as np
 
+from ..utils.logger import logger
+
 
 class ONNXExporter:
     """ONNX 模型导出器"""
@@ -28,9 +30,10 @@ class ONNXExporter:
         Returns:
             str: 保存路径
         """
-        print(f"\n导出 ONNX 模型到: {save_path}")
-        print(f"Opset 版本: {opset_version}")
-        print(f"输入模式: 单张图片 (batch_size=1)")
+        logger.info("导出 ONNX 模型",
+                    save_path=str(save_path),
+                    opset_version=opset_version,
+                    input_mode="单张图片 (batch_size=1)")
 
         # 设置为评估模式
         self.model.eval()
@@ -40,7 +43,7 @@ class ONNXExporter:
         dummy_input = torch.randn(1, 3, self.img_size, self.img_size)
 
         # 导出 (固定 batch_size=1，每次只处理一张图片)
-        print("正在导出...")
+        logger.info("正在导出 ONNX...")
         torch.onnx.export(
             self.model,
             dummy_input,
@@ -54,10 +57,10 @@ class ONNXExporter:
         )
 
         # 验证ONNX模型
-        print("验证 ONNX 模型...")
+        logger.info("验证 ONNX 模型...")
         onnx_model = onnx.load(save_path)
         onnx.checker.check_model(onnx_model)
-        print("✓ ONNX 模型验证通过")
+        logger.success("ONNX 模型验证通过")
 
         # 测试推理一致性
         self._test_inference(save_path, dummy_input)
@@ -65,7 +68,7 @@ class ONNXExporter:
         # 打印模型信息
         self._print_model_info(save_path)
 
-        print(f"✓ ONNX 模型导出成功: {save_path}\n")
+        logger.success(f"ONNX 模型导出成功: {save_path}")
         return save_path
 
     def _test_inference(self, onnx_path, test_input):
@@ -76,7 +79,7 @@ class ONNXExporter:
             onnx_path: ONNX 模型路径
             test_input: 测试输入
         """
-        print("测试推理一致性...")
+        logger.info("测试推理一致性...")
 
         # PyTorch 推理
         with torch.no_grad():
@@ -92,11 +95,12 @@ class ONNXExporter:
                 pytorch_output, onnx_output,
                 rtol=1e-3, atol=1e-5
             )
-            print("✓ 推理一致性验证通过")
+            logger.success("推理一致性验证通过")
         except AssertionError as e:
-            print(f"⚠️  推理一致性验证失败: {e}")
             max_diff = np.max(np.abs(pytorch_output - onnx_output))
-            print(f"   最大差异: {max_diff}")
+            logger.warning("推理一致性验证失败",
+                          error=str(e),
+                          max_diff=float(max_diff))
 
     def _print_model_info(self, onnx_path):
         """
@@ -115,12 +119,12 @@ class ONNXExporter:
         input_info = session.get_inputs()[0]
         output_info = session.get_outputs()[0]
 
-        print("\nONNX 模型信息:")
-        print(f"  文件大小: {file_size:.2f} MB")
-        print(f"  输入名称: {input_info.name}")
-        print(f"  输入形状: {input_info.shape} (固定为单张图片)")
-        print(f"  输入类型: {input_info.type}")
-        print(f"  输出名称: {output_info.name}")
-        print(f"  输出形状: {output_info.shape} (batch_size=1)")
-        print(f"  输出类型: {output_info.type}")
-        print(f"\n  使用说明: 此模型每次只接受一张图片输入")
+        logger.info("ONNX 模型信息",
+                    file_size_mb=f"{file_size:.2f}",
+                    input_name=input_info.name,
+                    input_shape=str(input_info.shape),
+                    input_type=input_info.type,
+                    output_name=output_info.name,
+                    output_shape=str(output_info.shape),
+                    output_type=output_info.type,
+                    note="此模型每次只接受一张图片输入")

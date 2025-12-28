@@ -2,6 +2,7 @@
 import torch
 import torch.nn as nn
 from torchvision.models import mobilenet_v2, MobileNet_V2_Weights
+from ..utils.logger import logger
 
 
 class MobileNetV2Classifier(nn.Module):
@@ -65,23 +66,27 @@ class MobileNetV2Classifier(nn.Module):
             unfreeze_from_layer: 从第几层开始解冻（默认14层）
                                 MobileNetV2 的 features 总共有 18 层
         """
-        print(f"\n解冻主干网络从第 {unfreeze_from_layer} 层开始...")
+        logger.info("解冻主干网络", from_layer=unfreeze_from_layer)
 
         for i, child in enumerate(self.backbone.features.children()):
             if i >= unfreeze_from_layer:
                 for param in child.parameters():
                     param.requires_grad = True
-                print(f"  - 层 {i}: 已解冻")
+                logger.debug(f"层 {i} 已解冻")
 
         # 统计可训练参数
         trainable_params = sum(p.numel() for p in self.parameters() if p.requires_grad)
         total_params = sum(p.numel() for p in self.parameters())
-        print(f"\n可训练参数: {trainable_params:,} / {total_params:,} "
-              f"({100 * trainable_params / total_params:.1f}%)\n")
+        logger.info(
+            "可训练参数统计",
+            trainable=f"{trainable_params:,}",
+            total=f"{total_params:,}",
+            percentage=f"{100 * trainable_params / total_params:.1f}%"
+        )
 
     def freeze_backbone(self):
         """冻结整个主干网络（仅训练分类头）"""
-        print("\n冻结主干网络...")
+        logger.info("冻结主干网络")
 
         for param in self.backbone.features.parameters():
             param.requires_grad = False
@@ -89,8 +94,12 @@ class MobileNetV2Classifier(nn.Module):
         # 统计可训练参数
         trainable_params = sum(p.numel() for p in self.parameters() if p.requires_grad)
         total_params = sum(p.numel() for p in self.parameters())
-        print(f"可训练参数: {trainable_params:,} / {total_params:,} "
-              f"({100 * trainable_params / total_params:.1f}%)\n")
+        logger.info(
+            "可训练参数统计",
+            trainable=f"{trainable_params:,}",
+            total=f"{total_params:,}",
+            percentage=f"{100 * trainable_params / total_params:.1f}%"
+        )
 
     def get_trainable_params(self):
         """获取所有可训练参数"""

@@ -1,4 +1,7 @@
 """训练可视化工具"""
+import matplotlib
+# 使用非交互式后端，避免弹出窗口和卡顿
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
@@ -62,7 +65,6 @@ class Visualizer:
             plt.savefig(save_path, dpi=300, bbox_inches='tight')
             print(f"训练曲线已保存到: {save_path}")
 
-        plt.show()
         plt.close()
 
     @staticmethod
@@ -116,7 +118,6 @@ class Visualizer:
             plt.savefig(save_path, dpi=300, bbox_inches='tight')
             print(f"混淆矩阵已保存到: {save_path}")
 
-        plt.show()
         plt.close()
 
     @staticmethod
@@ -171,7 +172,6 @@ class Visualizer:
             plt.savefig(save_path, dpi=300, bbox_inches='tight')
             print(f"每类指标图已保存到: {save_path}")
 
-        plt.show()
         plt.close()
 
     @staticmethod

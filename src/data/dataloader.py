@@ -3,6 +3,8 @@ from pathlib import Path
 from torch.utils.data import DataLoader
 from .dataset import ScreenshotDataset
 from .transforms import get_train_transforms, get_val_transforms
+from ..utils.logger import logger
+from ..utils.rich_console import print_table
 
 
 def create_dataloaders(data_root, batch_size=16, num_workers=4, img_size=224):
@@ -39,17 +41,33 @@ def create_dataloaders(data_root, batch_size=16, num_workers=4, img_size=224):
     )
 
     # 打印数据集信息
-    print("\n" + "="*50)
-    print("数据集信息:")
-    print("="*50)
-    print(f"训练集: {len(train_dataset)} 张图片")
-    print(f"  类别分布: {train_dataset.get_class_distribution()}")
-    print(f"验证集: {len(val_dataset)} 张图片")
-    print(f"  类别分布: {val_dataset.get_class_distribution()}")
-    print(f"测试集: {len(test_dataset)} 张图片")
-    print(f"  类别分布: {test_dataset.get_class_distribution()}")
-    print(f"类别: {train_dataset.classes}")
-    print("="*50 + "\n")
+    train_dist = train_dataset.get_class_distribution()
+    val_dist = val_dataset.get_class_distribution()
+    test_dist = test_dataset.get_class_distribution()
+    classes = train_dataset.classes
+
+    # 构建统计表格
+    rows = []
+    for cls in classes:
+        rows.append([
+            cls,
+            train_dist.get(cls, 0),
+            val_dist.get(cls, 0),
+            test_dist.get(cls, 0)
+        ])
+
+    print_table(
+        title="数据集信息",
+        headers=["类别", "训练集", "验证集", "测试集"],
+        rows=rows,
+        caption=f"总计: 训练集 {len(train_dataset)}, 验证集 {len(val_dataset)}, 测试集 {len(test_dataset)}"
+    )
+
+    logger.info("数据集加载完成",
+                train_size=len(train_dataset),
+                val_size=len(val_dataset),
+                test_size=len(test_dataset),
+                classes=', '.join(classes))
 
     # 创建DataLoader
     # 训练集: shuffle=True, drop_last=True（丢弃最后一个不完整batch）

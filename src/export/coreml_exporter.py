@@ -2,6 +2,8 @@
 import torch
 import coremltools as ct
 
+from ..utils.logger import logger
+
 
 class CoreMLExporter:
     """CoreML 模型导出器（用于 iOS 部署）"""
@@ -28,7 +30,7 @@ class CoreMLExporter:
         Returns:
             str: 保存路径
         """
-        print(f"\n导出 CoreML 模型到: {save_path}")
+        logger.info("导出 CoreML 模型", save_path=str(save_path), quantize=quantize)
 
         # 设置为评估模式
         self.model.eval()
@@ -38,11 +40,11 @@ class CoreMLExporter:
         example_input = torch.randn(1, 3, self.img_size, self.img_size)
 
         # Trace 模型
-        print("正在 trace 模型...")
+        logger.info("正在 trace 模型...")
         traced_model = torch.jit.trace(self.model, example_input)
 
         # 转换为 CoreML
-        print("正在转换为 CoreML...")
+        logger.info("正在转换为 CoreML...")
         try:
             coreml_model = ct.convert(
                 traced_model,
@@ -66,12 +68,12 @@ class CoreMLExporter:
             # 打印模型信息
             self._print_model_info(save_path, quantize)
 
-            print(f"✓ CoreML 模型导出成功: {save_path}\n")
+            logger.success(f"CoreML 模型导出成功: {save_path}")
             return save_path
 
         except Exception as e:
-            print(f"❌ CoreML 导出失败: {e}")
-            print("提示: CoreML 导出在某些情况下可能会失败，建议优先使用 ONNX 格式")
+            logger.error("CoreML 导出失败", error=str(e))
+            logger.info("提示: CoreML 导出在某些情况下可能会失败，建议优先使用 ONNX 格式")
             raise
 
     def _print_model_info(self, model_path, quantize):
@@ -87,8 +89,8 @@ class CoreMLExporter:
         # 文件大小
         file_size = os.path.getsize(model_path) / (1024 * 1024)  # MB
 
-        print("\nCoreML 模型信息:")
-        print(f"  文件大小: {file_size:.2f} MB")
-        print(f"  量化: {'是 (FP16)' if quantize else '否 (FP32)'}")
-        print(f"  类别: {', '.join(self.class_names)}")
-        print(f"  输入尺寸: ({1, 3, self.img_size, self.img_size})")
+        logger.info("CoreML 模型信息",
+                    file_size_mb=f"{file_size:.2f}",
+                    quantize='是 (FP16)' if quantize else '否 (FP32)',
+                    classes=', '.join(self.class_names),
+                    input_size=f"(1, 3, {self.img_size}, {self.img_size})")

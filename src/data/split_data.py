@@ -9,6 +9,8 @@ import sys
 sys.path.append(str(Path(__file__).parent.parent.parent))
 
 from src.config.training_config import BaseConfig
+from src.utils.logger import logger
+from src.utils.rich_console import print_header, print_table
 
 
 def split_dataset(config=None):
@@ -33,40 +35,54 @@ def split_dataset(config=None):
         split_dir = config.processed_data_dir / split
         split_dir.mkdir(parents=True, exist_ok=True)
 
-    print("="*60)
-    print("开始数据划分")
-    print("="*60)
-    print(f"源数据目录: {config.raw_data_dir}")
-    print(f"输出目录: {config.processed_data_dir}")
-    print(f"划分比例: Train={config.train_ratio}, Val={config.val_ratio}, Test={config.test_ratio}")
-    print(f"随机种子: {config.random_seed}")
-    print("="*60 + "\n")
+    print_header("数据集划分", "将原始数据划分为训练集/验证集/测试集")
+    logger.info("数据划分配置",
+                raw_data_dir=str(config.raw_data_dir),
+                output_dir=str(config.processed_data_dir),
+                train_ratio=config.train_ratio,
+                val_ratio=config.val_ratio,
+                test_ratio=config.test_ratio,
+                random_seed=config.random_seed)
 
-    # 获取所有类别
-    classes = [d.name for d in config.raw_data_dir.iterdir() if d.is_dir()]
-    classes = sorted(classes)  # 确保顺序一致
+    # 递归查找所有包含图片的文件夹，按文件夹名称分类
+    image_extensions = ['.jpg', '.jpeg', '.png', '.JPG', '.JPEG', '.PNG']
+
+    # 收集所有图片，按文件夹名称（类别）分组
+    class_images = {}
+
+    # 递归遍历所有子目录
+    for root_path in config.raw_data_dir.rglob('*'):
+        if root_path.is_file() and root_path.suffix in image_extensions:
+            # 使用图片所在的直接父文件夹名称作为类别
+            class_name = root_path.parent.name
+
+            if class_name not in class_images:
+                class_images[class_name] = []
+            class_images[class_name].append(root_path)
+
+    # 获取所有类别并排序
+    classes = sorted(class_images.keys())
+
+    if not classes:
+        raise ValueError(f"在 {config.raw_data_dir} 下没有找到任何图片文件")
+
+    logger.info(f"找到 {len(classes)} 个类别", classes=', '.join(classes))
 
     total_stats = {'train': 0, 'val': 0, 'test': 0}
     class_stats = {}
 
     # 对每个类别独立进行分层采样
     for class_name in classes:
-        print(f"\n处理类别: {class_name}")
-        print("-"*40)
+        logger.info(f"处理类别: {class_name}")
 
-        class_dir = config.raw_data_dir / class_name
-
-        # 获取所有图片文件
-        image_extensions = ['*.jpg', '*.jpeg', '*.png', '*.JPG', '*.JPEG', '*.PNG']
-        image_files = []
-        for ext in image_extensions:
-            image_files.extend(list(class_dir.glob(ext)))
+        # 获取该类别的所有图片文件
+        image_files = class_images[class_name]
 
         if len(image_files) == 0:
-            print(f"  警告: 类别 {class_name} 中没有找到图片，跳过")
+            logger.warning(f"类别 {class_name} 中没有找到图片，跳过")
             continue
 
-        print(f"  总共找到 {len(image_files)} 张图片")
+        logger.info(f"类别 {class_name} 总共找到 {len(image_files)} 张图片")
 
         # 第一次划分: 分离出测试集
         train_val_files, test_files = train_test_split(
@@ -93,10 +109,10 @@ def split_dataset(config=None):
             'total': len(image_files)
         }
 
-        print(f"  划分结果:")
-        print(f"    训练集: {len(train_files)} 张")
-        print(f"    验证集: {len(val_files)} 张")
-        print(f"    测试集: {len(test_files)} 张")
+        logger.info(f"类别 {class_name} 划分结果",
+                    train=len(train_files),
+                    val=len(val_files),
+                    test=len(test_files))
 
         # 复制文件到对应目录
         for split_name, files in [('train', train_files), ('val', val_files), ('test', test_files)]:
@@ -111,28 +127,39 @@ def split_dataset(config=None):
 
             total_stats[split_name] += len(files)
 
-        print(f"  ✓ 文件已复制到目标目录")
+        logger.success(f"类别 {class_name} 文件已复制到目标目录")
 
     # 打印总结
-    print("\n" + "="*60)
-    print("数据划分完成！")
-    print("="*60)
-    print("\n总体统计:")
-    print(f"  训练集: {total_stats['train']} 张")
-    print(f"  验证集: {total_stats['val']} 张")
-    print(f"  测试集: {total_stats['test']} 张")
-    print(f"  总计: {sum(total_stats.values())} 张")
+    logger.success("数据划分完成",
+                   train=total_stats['train'],
+                   val=total_stats['val'],
+                   test=total_stats['test'],
+                   total=sum(total_stats.values()))
 
-    print("\n各类别统计:")
-    print(f"{'类别':<15} {'训练集':>8} {'验证集':>8} {'测试集':>8} {'总计':>8}")
-    print("-"*60)
-    for class_name, stats in class_stats.items():
-        print(f"{class_name:<15} {stats['train']:>8} {stats['val']:>8} "
-              f"{stats['test']:>8} {stats['total']:>8}")
+    # 总体统计表格
+    print_table(
+        title="总体统计",
+        headers=["数据集", "图片数量"],
+        rows=[
+            ["训练集", total_stats['train']],
+            ["验证集", total_stats['val']],
+            ["测试集", total_stats['test']]
+        ],
+        caption=f"总计: {sum(total_stats.values())} 张图片"
+    )
 
-    print("\n" + "="*60)
-    print(f"数据已保存到: {config.processed_data_dir}")
-    print("="*60)
+    # 各类别统计表格
+    class_rows = [
+        [class_name, stats['train'], stats['val'], stats['test'], stats['total']]
+        for class_name, stats in class_stats.items()
+    ]
+    print_table(
+        title="各类别统计",
+        headers=["类别", "训练集", "验证集", "测试集", "总计"],
+        rows=class_rows
+    )
+
+    logger.success(f"数据已保存到: {config.processed_data_dir}")
 
 
 if __name__ == '__main__':

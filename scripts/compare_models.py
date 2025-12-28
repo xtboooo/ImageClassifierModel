@@ -13,7 +13,15 @@ sys.path.insert(0, str(project_root))
 import torch
 import numpy as np
 from PIL import Image
-from tqdm import tqdm
+from src.utils.logger import logger
+from src.utils.rich_console import (
+    RichProgressManager,
+    print_header,
+    print_success,
+    print_error,
+    print_warning,
+    print_table
+)
 
 
 class ModelLoader:
@@ -45,8 +53,10 @@ class ModelLoader:
         try:
             import tensorflow as tf
         except ImportError:
-            raise ImportError("请安装 tensorflow: 需要Python 3.11环境")
-
+            raise ImportError(
+                "请安装 tensorflow: uv sync --extra tflite\n"
+                "或者: uv pip install tensorflow>=2.16.0"
+            )
         interpreter = tf.lite.Interpreter(model_path=tflite_path)
         interpreter.allocate_tensors()
         return interpreter
@@ -79,8 +89,8 @@ class InferenceEngine:
             # ONNX需要numpy数组
             return tensor.numpy()
         elif self.model_type == 'tflite':
-            # TFLite需要NHWC格式 + batch维度
-            tflite_input = tensor.permute(1, 2, 0).unsqueeze(0).numpy().astype(np.float32)
+            # TFLite（ai-edge-torch导出）使用NCHW格式（PyTorch格式）+ batch维度
+            tflite_input = tensor.unsqueeze(0).numpy().astype(np.float32)
             return tflite_input
         else:
             raise ValueError(f"不支持的模型类型: {self.model_type}")
@@ -167,7 +177,7 @@ class ModelComparator:
     def _load_models(self):
         """加载所有模型"""
         for name, config in self.models_config.items():
-            print(f"加载 {name} 模型...")
+            logger.info("加载模型", model_name=name, type=config['type'])
 
             try:
                 if config['type'] == 'checkpoint':
@@ -183,10 +193,11 @@ class ModelComparator:
                     raise ValueError(f"不支持的模型类型: {config['type']}")
 
                 self.engines[name] = engine
-                print(f"  ✓ {name} 模型加载成功")
+                print_success(f"{name} 模型加载成功")
             except Exception as e:
-                print(f"  ✗ {name} 模型加载失败: {e}")
-                print(f"     跳过 {name} 模型的对比")
+                print_error(f"{name} 模型加载失败: {e}")
+                logger.error("模型加载失败", model_name=name, error=str(e))
+                print_warning(f"跳过 {name} 模型的对比")
 
     def get_model_size(self, model_path):
         """获取模型大小（MB）"""
@@ -207,7 +218,7 @@ class ModelComparator:
     def compare(self, num_samples=None):
         """执行对比"""
         if not self.engines:
-            print("❌ 没有成功加载任何模型，无法对比")
+            print_error("没有成功加载任何模型，无法对比")
             return None
 
         # 获取测试图片
@@ -220,7 +231,7 @@ class ModelComparator:
         if num_samples:
             image_paths = image_paths[:num_samples]
 
-        print(f"\n开始对比 {len(image_paths)} 张图片...")
+        logger.info("开始模型对比", total_images=len(image_paths), num_models=len(self.engines))
 
         results = {
             'model_info': {},
@@ -244,31 +255,36 @@ class ModelComparator:
         inference_times = {name: [] for name in self.engines.keys()}
         predictions = {name: [] for name in self.engines.keys()}
 
-        for img_path in tqdm(image_paths, desc="推理中"):
-            img_result = {'image': img_path.name}
+        with RichProgressManager() as progress:
+            task = progress.add_task("推理中", total=len(image_paths))
 
-            for model_name, engine in self.engines.items():
-                try:
-                    input_data = engine.preprocess(img_path)
-                    pred = engine.infer(input_data, measure_time=True)
+            for img_path in image_paths:
+                img_result = {'image': img_path.name}
 
-                    img_result[model_name] = {
-                        'class': self.class_names[pred['class_idx']],
-                        'confidence': f"{pred['confidence']:.4f}",
-                        'time_ms': f"{pred['inference_time_ms']:.2f}"
-                    }
+                for model_name, engine in self.engines.items():
+                    try:
+                        input_data = engine.preprocess(img_path)
+                        pred = engine.infer(input_data, measure_time=True)
 
-                    inference_times[model_name].append(pred['inference_time_ms'])
-                    predictions[model_name].append(pred['class_idx'])
-                except Exception as e:
-                    print(f"\n⚠️  {img_path.name} 在 {model_name} 上推理失败: {e}")
-                    img_result[model_name] = {
-                        'class': 'ERROR',
-                        'confidence': '0.0000',
-                        'time_ms': '0.00'
-                    }
+                        img_result[model_name] = {
+                            'class': self.class_names[pred['class_idx']],
+                            'confidence': f"{pred['confidence']:.4f}",
+                            'time_ms': f"{pred['inference_time_ms']:.2f}"
+                        }
 
-            results['inference_results'].append(img_result)
+                        inference_times[model_name].append(pred['inference_time_ms'])
+                        predictions[model_name].append(pred['class_idx'])
+                    except Exception as e:
+                        print_warning(f"{img_path.name} 在 {model_name} 上推理失败: {e}")
+                        logger.warning("推理失败", image=img_path.name, model=model_name, error=str(e))
+                        img_result[model_name] = {
+                            'class': 'ERROR',
+                            'confidence': '0.0000',
+                            'time_ms': '0.00'
+                        }
+
+                results['inference_results'].append(img_result)
+                progress.update("推理中", advance=1)
 
         # 计算一致性
         consistency = self._calculate_consistency(predictions)
@@ -394,7 +410,7 @@ def generate_markdown_report(results, output_path):
     with open(output_path, 'w', encoding='utf-8') as f:
         f.write('\n'.join(report))
 
-    print(f"\n✓ Markdown报告已生成: {output_path}")
+    print_success(f"Markdown报告已生成: {output_path}")
 
 
 def parse_args():
@@ -421,14 +437,18 @@ def main():
     """主函数"""
     args = parse_args()
 
-    print("\n" + "="*70)
-    print("模型对比")
-    print("="*70)
-    print(f"PyTorch Checkpoint: {args.checkpoint}")
-    print(f"ONNX 模型: {args.onnx}")
-    print(f"TFLite 模型: {args.tflite or '未指定'}")
-    print(f"测试目录: {args.test_dir}")
-    print("="*70 + "\n")
+    print_header("模型对比", "对比不同格式模型的性能和一致性")
+
+    print_table(
+        title="对比配置",
+        headers=["配置项", "值"],
+        rows=[
+            ["PyTorch Checkpoint", args.checkpoint],
+            ["ONNX 模型", args.onnx],
+            ["TFLite 模型", args.tflite or "未指定"],
+            ["测试目录", args.test_dir]
+        ]
+    )
 
     # 配置模型
     models_config = {
@@ -448,7 +468,8 @@ def main():
     results = comparator.compare(num_samples=args.num_samples)
 
     if results is None:
-        print("\n❌ 对比失败")
+        print_error("对比失败")
+        logger.error("模型对比失败")
         sys.exit(1)
 
     # 输出目录
@@ -461,34 +482,45 @@ def main():
     json_path = output_dir / f"comparison_{timestamp}.json"
     with open(json_path, 'w', encoding='utf-8') as f:
         json.dump(results, f, ensure_ascii=False, indent=2)
-    print(f"✓ JSON报告已保存: {json_path}")
+    print_success(f"JSON报告已保存: {json_path}")
 
     # 生成Markdown报告
     md_path = output_dir / f"comparison_{timestamp}.md"
     generate_markdown_report(results, md_path)
 
     # 打印摘要
-    print("\n" + "="*70)
-    print("对比摘要")
-    print("="*70)
+    print_header("对比摘要")
 
-    print("\n模型大小:")
-    for name, info in results['model_info'].items():
-        print(f"  {name:<10} {info['size_mb']:>8} MB")
+    # 模型大小表格
+    size_rows = [[name, f"{info['size_mb']} MB"] for name, info in results['model_info'].items()]
+    print_table(
+        title="模型大小",
+        headers=["模型", "大小"],
+        rows=size_rows
+    )
 
-    print("\n平均推理速度:")
-    for name, stats in results['summary'].items():
-        if name == 'consistency':
-            continue
-        print(f"  {name:<10} {stats['avg_time_ms']:>8} ms")
+    # 推理速度表格
+    speed_rows = [
+        [name, f"{stats['avg_time_ms']} ms"]
+        for name, stats in results['summary'].items()
+        if name != 'consistency'
+    ]
+    print_table(
+        title="平均推理速度",
+        headers=["模型", "平均耗时"],
+        rows=speed_rows
+    )
 
-    print("\n预测一致性:")
-    for pair, rate in results['summary']['consistency'].items():
-        print(f"  {pair:<25} {rate}")
+    # 预测一致性表格
+    consistency_rows = [[pair, rate] for pair, rate in results['summary']['consistency'].items()]
+    print_table(
+        title="预测一致性",
+        headers=["对比", "一致率"],
+        rows=consistency_rows
+    )
 
-    print("="*70 + "\n")
-
-    print(f"✅ 对比完成！报告已保存到: {output_dir}\n")
+    print_success(f"对比完成！报告已保存到: {output_dir}")
+    logger.info("模型对比完成", output_dir=str(output_dir))
 
 
 if __name__ == '__main__':

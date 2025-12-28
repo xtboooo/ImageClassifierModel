@@ -17,12 +17,11 @@ ImageClassifierModel is a mobile image classification project that trains a deep
 
 ## Dataset
 
-Training data is located in `data/input/data1226/` with 256 labeled mobile screenshots:
-- `Failure/`: 95 images (57 MB) - Mobile app failure states
-- `Loading/`: 68 images (88 MB) - Loading/waiting states
-- `Success/`: 93 images (137 MB) - Successful operation states
-
-Backup: `data/input/data1226.zip`
+Training data is located in `data/input/` directory. The system will recursively scan all subdirectories to find images organized by category folders:
+- Images should be organized in folders where the folder name represents the class label
+- Example structure: `data/input/DatasetName/Failure/`, `data/input/DatasetName/Loading/`, etc.
+- All images with the same parent folder name will be grouped into the same class
+- Currently contains 256 labeled mobile screenshots across 3 categories: Failure, Loading, Success
 
 ## Project Structure
 

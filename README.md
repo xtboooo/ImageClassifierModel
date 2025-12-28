@@ -36,10 +36,10 @@ pip install -e .
 
 ### 数据准备
 
-将数据放置在 `data/input/data1226/` 目录下，按以下结构组织：
+将数据放置在 `data/input/Data1227-2029/` 目录下，按以下结构组织：
 
 ```
-data/input/data1226/
+data/input/Data1227-2029/
 ├── Failure/    # 失败状态截图
 ├── Loading/    # 加载状态截图
 └── Success/    # 成功状态截图

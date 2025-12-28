@@ -1,5 +1,7 @@
 """模型工厂 - 统一的模型创建接口"""
 from .mobilenet_v2 import MobileNetV2Classifier
+from ..utils.logger import logger
+from ..utils.rich_console import print_table
 
 
 def create_model(model_name='mobilenet_v2', num_classes=3, pretrained=True, **kwargs):
@@ -33,17 +35,21 @@ def create_model(model_name='mobilenet_v2', num_classes=3, pretrained=True, **kw
         )
 
     # 打印模型信息
-    print("\n" + "="*60)
-    print(f"模型: {model_name}")
-    print("="*60)
-
     params_info = model.count_parameters()
-    print(f"总参数: {params_info['total']:,}")
-    print(f"可训练参数: {params_info['trainable']:,} ({params_info['trainable_percentage']:.1f}%)")
-    print(f"冻结参数: {params_info['frozen']:,}")
-    print(f"预训练: {'是' if pretrained else '否'}")
-    print(f"分类数量: {num_classes}")
-    print("="*60 + "\n")
+
+    print_table(
+        title=f"模型信息: {model_name}",
+        headers=["配置项", "值"],
+        rows=[
+            ["总参数", f"{params_info['total']:,}"],
+            ["可训练参数", f"{params_info['trainable']:,} ({params_info['trainable_percentage']:.1f}%)"],
+            ["冻结参数", f"{params_info['frozen']:,}"],
+            ["预训练", "是" if pretrained else "否"],
+            ["分类数量", str(num_classes)]
+        ]
+    )
+
+    logger.info("模型创建完成", model=model_name, params=params_info['total'])
 
     return model
 
@@ -72,13 +78,13 @@ def load_model_from_checkpoint(checkpoint_path, model_name='mobilenet_v2', num_c
     # 加载模型权重
     model.load_state_dict(checkpoint['model_state_dict'])
 
-    print(f"\n已从检查点加载模型: {checkpoint_path}")
+    logger.success("从检查点加载模型", path=str(checkpoint_path))
 
     # 打印检查点信息
     if 'history' in checkpoint:
         history = checkpoint['history']
         if 'val_acc' in history and len(history['val_acc']) > 0:
             best_acc = max(history['val_acc'])
-            print(f"最佳验证准确率: {best_acc:.2f}%")
+            logger.info("检查点信息", best_val_acc=f"{best_acc:.2f}%")
 
     return model, checkpoint

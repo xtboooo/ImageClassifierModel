@@ -3,11 +3,12 @@ import torch
 import torch.nn as nn
 from torch.optim import AdamW
 from torch.optim.lr_scheduler import CosineAnnealingWarmRestarts
-from tqdm import tqdm
 from pathlib import Path
 
 from .early_stopping import EarlyStopping
 from ..utils.device import get_device
+from ..utils.logger import logger
+from ..utils.rich_console import RichProgressManager
 
 
 class Trainer:
@@ -78,48 +79,52 @@ class Trainer:
         self.best_val_loss = float('inf')
         self.best_val_acc = 0.0
 
-    def train_epoch(self):
+    def train_epoch(self, epoch_num=None):
         """
         训练一个 epoch
 
+        Args:
+            epoch_num: 当前 epoch 编号（用于进度条显示）
+
         Returns:
-            float: 平均训练损失
+            tuple: (平均训练损失, 平均训练准确率)
         """
         self.model.train()
         total_loss = 0
         correct = 0
         total = 0
 
-        pbar = tqdm(self.train_loader, desc='Training')
-        for images, labels in pbar:
-            # 数据移到设备
-            images, labels = images.to(self.device), labels.to(self.device)
+        desc = f"训练 Epoch {epoch_num}" if epoch_num else "训练"
 
-            # 前向传播
-            outputs = self.model(images)
-            loss = self.criterion(outputs, labels)
+        with RichProgressManager() as progress:
+            task = progress.add_task(desc, total=len(self.train_loader))
 
-            # 反向传播
-            self.optimizer.zero_grad()
-            loss.backward()
+            for images, labels in self.train_loader:
+                # 数据移到设备
+                images, labels = images.to(self.device), labels.to(self.device)
 
-            # 梯度裁剪（防止梯度爆炸）
-            torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_norm=1.0)
+                # 前向传播
+                outputs = self.model(images)
+                loss = self.criterion(outputs, labels)
 
-            # 更新参数
-            self.optimizer.step()
+                # 反向传播
+                self.optimizer.zero_grad()
+                loss.backward()
 
-            # 统计
-            total_loss += loss.item()
-            _, predicted = outputs.max(1)
-            total += labels.size(0)
-            correct += predicted.eq(labels).sum().item()
+                # 梯度裁剪（防止梯度爆炸）
+                torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_norm=1.0)
 
-            # 更新进度条
-            pbar.set_postfix({
-                'loss': f'{loss.item():.4f}',
-                'acc': f'{100.*correct/total:.2f}%'
-            })
+                # 更新参数
+                self.optimizer.step()
+
+                # 统计
+                total_loss += loss.item()
+                _, predicted = outputs.max(1)
+                total += labels.size(0)
+                correct += predicted.eq(labels).sum().item()
+
+                # 更新进度条
+                progress.update(desc, advance=1)
 
         avg_loss = total_loss / len(self.train_loader)
         avg_acc = 100. * correct / total
@@ -139,19 +144,25 @@ class Trainer:
         total = 0
 
         with torch.no_grad():
-            for images, labels in tqdm(self.val_loader, desc='Validation'):
-                # 数据移到设备
-                images, labels = images.to(self.device), labels.to(self.device)
+            with RichProgressManager() as progress:
+                task = progress.add_task("验证", total=len(self.val_loader))
 
-                # 前向传播
-                outputs = self.model(images)
-                loss = self.criterion(outputs, labels)
+                for images, labels in self.val_loader:
+                    # 数据移到设备
+                    images, labels = images.to(self.device), labels.to(self.device)
 
-                # 统计
-                total_loss += loss.item()
-                _, predicted = outputs.max(1)
-                total += labels.size(0)
-                correct += predicted.eq(labels).sum().item()
+                    # 前向传播
+                    outputs = self.model(images)
+                    loss = self.criterion(outputs, labels)
+
+                    # 统计
+                    total_loss += loss.item()
+                    _, predicted = outputs.max(1)
+                    total += labels.size(0)
+                    correct += predicted.eq(labels).sum().item()
+
+                    # 更新进度条
+                    progress.update("验证", advance=1)
 
         val_loss = total_loss / len(self.val_loader)
         val_acc = 100. * correct / total
@@ -171,22 +182,18 @@ class Trainer:
         if num_epochs is None:
             num_epochs = self.config.num_epochs
 
-        print("\n" + "="*70)
-        print("开始训练")
-        print("="*70)
-        print(f"Epochs: {num_epochs}")
-        print(f"Batch Size: {self.config.batch_size}")
-        print(f"Learning Rate: {self.config.learning_rate}")
-        print(f"Device: {self.device}")
-        print(f"Early Stopping Patience: {self.config.early_stopping_patience}")
-        print("="*70 + "\n")
+        logger.info("开始训练",
+                    epochs=num_epochs,
+                    batch_size=self.config.batch_size,
+                    learning_rate=self.config.learning_rate,
+                    device=str(self.device),
+                    early_stopping_patience=self.config.early_stopping_patience)
 
         for epoch in range(num_epochs):
-            print(f"\nEpoch {epoch+1}/{num_epochs}")
-            print("-"*70)
+            logger.info(f"Epoch {epoch+1}/{num_epochs}")
 
             # 训练
-            train_loss, train_acc = self.train_epoch()
+            train_loss, train_acc = self.train_epoch(epoch_num=epoch+1)
 
             # 验证
             val_loss, val_acc = self.validate()
@@ -201,30 +208,33 @@ class Trainer:
             self.history['val_acc'].append(val_acc)
             self.history['learning_rate'].append(current_lr)
 
-            # 打印指标
-            print(f"\n训练 - Loss: {train_loss:.4f}, Acc: {train_acc:.2f}%")
-            print(f"验证 - Loss: {val_loss:.4f}, Acc: {val_acc:.2f}%")
-            print(f"学习率: {current_lr:.6f}")
+            # 记录指标
+            logger.info("Epoch 完成",
+                        epoch=f"{epoch+1}/{num_epochs}",
+                        train_loss=f"{train_loss:.4f}",
+                        train_acc=f"{train_acc:.2f}%",
+                        val_loss=f"{val_loss:.4f}",
+                        val_acc=f"{val_acc:.2f}%",
+                        learning_rate=f"{current_lr:.6f}")
 
             # 保存最佳模型（基于验证准确率）
             if val_acc > self.best_val_acc:
                 self.best_val_acc = val_acc
                 self.best_val_loss = val_loss
                 self.save_checkpoint('best_model.pth')
-                print(f"✓ 保存最佳模型 (Val Acc: {val_acc:.2f}%)")
+                logger.success(f"保存最佳模型 (验证准确率: {val_acc:.2f}%)")
 
             # 早停检查
             if self.early_stopping(val_loss):
-                print(f"\n早停触发！验证损失在 {self.config.early_stopping_patience} 个 epoch 内未改善")
-                print(f"最佳验证准确率: {self.best_val_acc:.2f}%")
+                logger.warning(
+                    f"早停触发！验证损失在 {self.config.early_stopping_patience} 个 epoch 内未改善",
+                    best_val_acc=f"{self.best_val_acc:.2f}%"
+                )
                 break
 
-        print("\n" + "="*70)
-        print("训练完成！")
-        print("="*70)
-        print(f"最佳验证准确率: {self.best_val_acc:.2f}%")
-        print(f"最佳验证损失: {self.best_val_loss:.4f}")
-        print("="*70 + "\n")
+        logger.success("训练完成",
+                       best_val_acc=f"{self.best_val_acc:.2f}%",
+                       best_val_loss=f"{self.best_val_loss:.4f}")
 
         return self.history
 
@@ -268,5 +278,6 @@ class Trainer:
         self.best_val_acc = checkpoint.get('best_val_acc', 0.0)
         self.best_val_loss = checkpoint.get('best_val_loss', float('inf'))
 
-        print(f"已从检查点加载: {checkpoint_path}")
-        print(f"最佳验证准确率: {self.best_val_acc:.2f}%")
+        logger.success("已从检查点加载",
+                       checkpoint_path=str(checkpoint_path),
+                       best_val_acc=f"{self.best_val_acc:.2f}%")

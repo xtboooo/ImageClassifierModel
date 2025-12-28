@@ -1,0 +1,27 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+.uv/
+.cache/
+
+# ML / Data
+data/
+datasets/
+checkpoints/
+*.pt
+*.pth
+*.onnx
+*.tflite
+
+# Node / Others
+node_modules/
+
+# OS
+.DS_Store

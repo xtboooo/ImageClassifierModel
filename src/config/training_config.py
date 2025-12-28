@@ -78,7 +78,7 @@ class BaseConfig:
     random_seed: int = 42
 
     # 数据集路径
-    raw_data_dir: Path = Path('data/input/data1226')
+    raw_data_dir: Path = Path('data/input')
     processed_data_dir: Path = Path('data/processed')
 
     # 数据划分比例

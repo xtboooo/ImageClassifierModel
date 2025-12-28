@@ -13,6 +13,19 @@ sys.path.insert(0, str(project_root))
 
 import torch
 
+# 导入日志和Rich工具
+from src.utils.logger import setup_logger, logger
+from src.utils.rich_console import (
+    print_header,
+    print_table,
+    print_panel,
+    print_success,
+    print_warning,
+    print_error,
+    print_stage_header,
+    RichProgressManager
+)
+
 
 def format_time(seconds):
     """格式化时间显示"""
@@ -47,9 +60,17 @@ class PipelineRunner:
         """执行完整流水线"""
         self.results['start_time'] = time.time()
 
-        print("\n" + "="*70)
-        print("🚀 模型训练流水线")
-        print("="*70)
+        # 立即初始化临时日志系统（使用简洁格式）
+        from loguru import logger as _logger
+        _logger.remove()  # 移除默认 handler
+        _logger.add(
+            sys.stdout,
+            level="INFO",
+            format="<green>{time:HH:mm:ss}</green> | <level>{level: <8}</level> | <level>{message}</level>",
+            colorize=True
+        )
+
+        print_header("模型训练流水线", "完整的训练、评估、导出、测试流程")
 
         try:
             # 阶段1: 初始化
@@ -62,8 +83,7 @@ class PipelineRunner:
             if not self.args.skip_train:
                 self._run_stage("模型训练", self.train_model)
             else:
-                print("\n[阶段3/8] 模型训练")
-                print("  ⊘ 已跳过（使用已有模型）")
+                print_stage_header(3, 8, "模型训练", "已跳过（使用已有模型）")
                 self.load_existing_model()
 
             # 阶段4: 模型评估
@@ -73,22 +93,19 @@ class PipelineRunner:
             if not self.args.skip_export:
                 self._run_stage("模型导出", self.export_models)
             else:
-                print("\n[阶段5/8] 模型导出")
-                print("  ⊘ 已跳过")
+                print_stage_header(5, 8, "模型导出", "已跳过")
 
             # 阶段6: 测试图片推理
             if not self.args.skip_test:
                 self._run_stage("测试图片推理", self.test_inference)
             else:
-                print("\n[阶段6/8] 测试图片推理")
-                print("  ⊘ 已跳过")
+                print_stage_header(6, 8, "测试图片推理", "已跳过")
 
             # 阶段7: 模型对比（可选）
             if self.args.compare_models:
                 self._run_stage("模型对比", self.compare_models_perf)
             else:
-                print("\n[阶段7/8] 模型对比")
-                print("  ⊘ 已跳过")
+                print_stage_header(7, 8, "模型对比", "已跳过")
 
             # 阶段8: 生成总结报告
             self._run_stage("生成总结报告", self.generate_summary)
@@ -97,16 +114,14 @@ class PipelineRunner:
             self.print_final_summary()
 
         except Exception as e:
-            print(f"\n❌ 流水线执行失败: {e}")
-            import traceback
-            traceback.print_exc()
+            logger.exception("流水线执行失败")
             self.results['errors'].append(str(e))
             sys.exit(1)
 
     def _run_stage(self, name, func):
         """运行单个阶段并记录时间"""
         stage_num = len([s for s in self.results['stages'] if self.results['stages'][s].get('completed', False)]) + 1
-        print(f"\n[阶段{stage_num}/8] {name}")
+        print_stage_header(stage_num, 8, name)
 
         start = time.time()
         try:
@@ -137,7 +152,9 @@ class PipelineRunner:
         self.run_dir = Path(self.args.output_base) / run_name
         self.run_dir.mkdir(parents=True, exist_ok=True)
 
-        print(f"  ✓ 创建运行目录: {self.run_dir}")
+        # 初始化日志系统 (关键!)
+        setup_logger(self.run_dir, console_level="INFO", file_level="DEBUG")
+        logger.success(f"创建运行目录: {self.run_dir}")
 
         # 创建子目录
         (self.run_dir / 'checkpoints').mkdir(exist_ok=True)
@@ -154,8 +171,8 @@ class PipelineRunner:
         with open(self.run_dir / 'config.json', 'w', encoding='utf-8') as f:
             json.dump(config_dict, f, indent=2, ensure_ascii=False)
 
-        print("  ✓ 保存运行配置")
-        print(f"  运行目录: {self.run_dir}")
+        logger.success("保存运行配置")
+        logger.info("运行目录", path=str(self.run_dir))
 
     def prepare_data(self):
         """阶段2: 数据准备"""
@@ -163,15 +180,15 @@ class PipelineRunner:
 
         # 检查是否需要重新划分
         if not processed_dir.exists() or self.args.force_split:
-            print("  正在划分数据集...")
+            logger.info("正在划分数据集...")
             from src.config.training_config import BaseConfig
             from src.data.split_data import split_dataset
 
             base_config = BaseConfig()
             split_dataset(base_config)
-            print("  ✓ 数据集划分完成")
+            logger.success("数据集划分完成")
         else:
-            print("  ✓ 数据集已存在")
+            logger.success("数据集已存在")
 
         # 统计数据
         train_count = len(list((processed_dir / 'train').rglob('*.jpg'))) + \
@@ -181,7 +198,17 @@ class PipelineRunner:
         test_count = len(list((processed_dir / 'test').rglob('*.jpg'))) + \
                     len(list((processed_dir / 'test').rglob('*.png')))
 
-        print(f"  ✓ 训练集: {train_count}张 | 验证集: {val_count}张 | 测试集: {test_count}张")
+        total = train_count + val_count + test_count
+        print_table(
+            title="数据集统计",
+            headers=["数据集", "图片数量", "比例"],
+            rows=[
+                ["训练集", train_count, f"{train_count/total*100:.1f}%"],
+                ["验证集", val_count, f"{val_count/total*100:.1f}%"],
+                ["测试集", test_count, f"{test_count/total*100:.1f}%"]
+            ],
+            caption=f"总计: {total} 张图片"
+        )
 
         self.results['data'] = {
             'train': train_count,
@@ -230,9 +257,9 @@ class PipelineRunner:
 
         # 执行训练
         if self.args.two_stage:
-            print("  训练模式: 两阶段训练")
-            print(f"    阶段1: 冻结主干 ({self.args.stage1_epochs} epochs)")
-            print(f"    阶段2: 微调全模型 ({self.args.stage2_epochs} epochs)")
+            logger.info("训练模式: 两阶段训练")
+            logger.info(f"阶段1: 冻结主干 ({self.args.stage1_epochs} epochs)")
+            logger.info(f"阶段2: 微调全模型 ({self.args.stage2_epochs} epochs)")
 
             # 导入两阶段训练函数
             import argparse as ap
@@ -260,7 +287,7 @@ class PipelineRunner:
 
             _, history = train_two_stage(train_args)
         else:
-            print(f"  训练模式: 标准训练 ({self.args.epochs} epochs)")
+            logger.info(f"训练模式: 标准训练 ({self.args.epochs} epochs)")
             history = trainer.train()
 
         # 保存checkpoint到运行目录
@@ -269,7 +296,7 @@ class PipelineRunner:
 
         if checkpoint_src.exists():
             shutil.copy(checkpoint_src, self.checkpoint_path)
-            print("  ✓ 模型已保存: checkpoints/best_model.pth")
+            logger.success("模型已保存: checkpoints/best_model.pth")
 
         # 记录训练结果
         if history:
@@ -279,7 +306,7 @@ class PipelineRunner:
                 'epochs': len(history['val_acc']) if 'val_acc' in history else 0,
                 'history': history
             }
-            print(f"  ✓ 最佳验证准确率: {best_val_acc*100:.2f}%")
+            logger.success(f"最佳验证准确率: {best_val_acc*100:.2f}%")
 
     def load_existing_model(self):
         """加载已有模型"""
@@ -295,7 +322,7 @@ class PipelineRunner:
         self.checkpoint_path = self.run_dir / 'checkpoints' / 'best_model.pth'
         shutil.copy(src_checkpoint, self.checkpoint_path)
 
-        print(f"  使用模型: {src_checkpoint}")
+        logger.info(f"使用模型: {src_checkpoint}")
 
     def evaluate_model(self):
         """阶段4: 模型评估"""
@@ -374,9 +401,9 @@ class PipelineRunner:
             )
 
         accuracy = metrics.get('accuracy', 0)
-        print(f"  ✓ 测试集准确率: {accuracy*100:.2f}%")
-        print("  ✓ 指标已保存: metrics/")
-        print("  ✓ 可视化已生成: visualizations/")
+        logger.success(f"测试集准确率: {accuracy*100:.2f}%")
+        logger.success("指标已保存: metrics/")
+        logger.success("可视化已生成: visualizations/")
 
         self.results['evaluation'] = metrics
 
@@ -399,7 +426,7 @@ class PipelineRunner:
                     output_path = export_dir / 'model.onnx'
                     exporter.export(str(output_path))
 
-                    print("  ✓ ONNX导出成功")
+                    logger.success("ONNX导出成功")
 
                 elif fmt == 'coreml':
                     from src.export.coreml_exporter import CoreMLExporter
@@ -413,20 +440,52 @@ class PipelineRunner:
                     output_path = export_dir / 'model.mlpackage'
                     exporter.export(str(output_path), quantize=self.args.quantize)
 
-                    print("  ✓ CoreML导出成功")
+                    logger.success("CoreML导出成功")
 
                 elif fmt == 'tflite':
-                    print("  ⚠ TFLite导出需要Python 3.11环境，已跳过")
+                    # TFLite 导出：统一使用 Docker 方式
+                    import platform
+                    import subprocess
+
+                    current_platform = platform.system()
+                    output_path = export_dir / 'model.tflite'
+
+                    logger.info(f"检测到系统: {current_platform}")
+
+                    # 统一使用 Docker 导出（避免 ONNX 版本转换问题）
+                    logger.info("使用 Docker 导出 TFLite...")
+
+                    # Docker 脚本路径
+                    script_path = Path(__file__).parent.parent / 'docker' / 'export_tflite.sh'
+
+                    if not script_path.exists():
+                        raise FileNotFoundError("Docker 导出脚本不存在: docker/export_tflite.sh")
+
+                    # 运行 Docker 导出
+                    result = subprocess.run(
+                        ['bash', str(script_path), str(self.checkpoint_path), str(output_path)],
+                        capture_output=True,
+                        text=True,
+                        timeout=600
+                    )
+
+                    if result.returncode != 0:
+                        logger.error("Docker 导出失败")
+                        if result.stderr:
+                            logger.error(f"错误信息: {result.stderr}")
+                        raise RuntimeError(f"Docker 导出失败: {result.stderr}")
+
+                    logger.success("TFLite Docker 导出成功")
 
             except Exception as e:
-                print(f"  ✗ {fmt.upper()}导出失败: {e}")
+                logger.error(f"{fmt.upper()}导出失败: {e}")
 
     def test_inference(self):
         """阶段6: 测试图片推理"""
         test_images_dir = Path(self.args.test_images)
 
         if not test_images_dir.exists():
-            print(f"  ⚠ 测试图片目录不存在: {test_images_dir}")
+            logger.warning(f"测试图片目录不存在: {test_images_dir}")
             return
 
         # 执行批量推理
@@ -465,7 +524,6 @@ class PipelineRunner:
             import csv
 
             from PIL import Image
-            from tqdm import tqdm
 
             from src.data.transforms import get_val_transforms
             from src.models.model_factory import load_model_from_checkpoint
@@ -486,37 +544,41 @@ class PipelineRunner:
             results = {}
             class_counts = {name: 0 for name in class_names}
 
-            for image_path in tqdm(image_paths, desc="  处理图片"):
-                try:
-                    image = Image.open(image_path).convert('RGB')
-                    image_tensor = transform(image)
+            with RichProgressManager() as progress:
+                task = progress.add_task("处理测试图片", total=len(image_paths))
+                for image_path in image_paths:
+                    try:
+                        image = Image.open(image_path).convert('RGB')
+                        image_tensor = transform(image)
 
-                    # 推理
-                    start_time = time.perf_counter()
-                    with torch.no_grad():
-                        image_tensor = image_tensor.unsqueeze(0).to(device)
-                        outputs = model(image_tensor)
-                        probabilities = torch.nn.functional.softmax(outputs, dim=1)
-                        confidence, predicted = torch.max(probabilities, 1)
-                    end_time = time.perf_counter()
+                        # 推理
+                        start_time = time.perf_counter()
+                        with torch.no_grad():
+                            image_tensor = image_tensor.unsqueeze(0).to(device)
+                            outputs = model(image_tensor)
+                            probabilities = torch.nn.functional.softmax(outputs, dim=1)
+                            confidence, predicted = torch.max(probabilities, 1)
+                        end_time = time.perf_counter()
 
-                    pred_class = class_names[predicted.item()]
-                    conf_score = confidence.item()
-                    inference_time_ms = (end_time - start_time) * 1000
+                        pred_class = class_names[predicted.item()]
+                        conf_score = confidence.item()
+                        inference_time_ms = (end_time - start_time) * 1000
 
-                    results[image_path.name] = {
-                        'predicted_class': pred_class,
-                        'confidence': conf_score,
-                        'inference_time_ms': inference_time_ms,
-                        'probabilities': {
-                            class_names[i]: float(probabilities[0][i])
-                            for i in range(len(class_names))
+                        results[image_path.name] = {
+                            'predicted_class': pred_class,
+                            'confidence': conf_score,
+                            'inference_time_ms': inference_time_ms,
+                            'probabilities': {
+                                class_names[i]: float(probabilities[0][i])
+                                for i in range(len(class_names))
+                            }
                         }
-                    }
 
-                    class_counts[pred_class] += 1
-                except Exception as e:
-                    print(f"    ⚠ {image_path.name} 处理失败: {e}")
+                        class_counts[pred_class] += 1
+                    except Exception as e:
+                        logger.warning(f"{image_path.name} 处理失败: {e}")
+                    finally:
+                        progress.update("处理测试图片", advance=1)
 
             # 保存JSON
             with open(test_results_dir / 'predictions.json', 'w', encoding='utf-8') as f:
@@ -546,12 +608,19 @@ class PipelineRunner:
                 f.write(f"总计: {total}张\n")
 
             # 打印统计
+            rows = []
             for class_name in class_names:
                 count = class_counts[class_name]
                 percentage = (count / total * 100) if total > 0 else 0
-                print(f"  ✓ {class_name}: {count}张 ({percentage:.1f}%)")
+                rows.append([class_name, f"{count}张", f"{percentage:.1f}%"])
 
-            print("  ✓ 结果已保存: test_results/")
+            print_table(
+                title="测试图片分类结果",
+                headers=["类别", "数量", "比例"],
+                rows=rows,
+                caption=f"总计: {total}张"
+            )
+            logger.success("结果已保存: test_results/")
 
             self.results['test_inference'] = {
                 'total': total,
@@ -570,7 +639,7 @@ class PipelineRunner:
         coreml_path = export_dir / 'model.mlpackage'
 
         if not onnx_path.exists():
-            print("  ⚠ 未找到ONNX模型，跳过对比")
+            logger.warning("未找到ONNX模型，跳过对比")
             return
 
         # 执行对比
@@ -598,7 +667,7 @@ class PipelineRunner:
             from scripts.compare_models import generate_markdown_report
             generate_markdown_report(results, comparison_dir / 'comparison.md')
 
-            print("  ✓ 对比报告已保存: model_comparison/")
+            logger.success("对比报告已保存: model_comparison/")
 
             self.results['model_comparison'] = results['summary']
 
@@ -699,25 +768,28 @@ class PipelineRunner:
         with open(self.run_dir / 'run_summary.md', 'w', encoding='utf-8') as f:
             f.write('\n'.join(report))
 
-        print("  ✓ 总结已保存: run_summary.md")
+        logger.success("总结已保存: run_summary.md")
 
     def print_final_summary(self):
         """打印最终总结"""
         total_time = self.results['end_time'] - self.results['start_time']
 
-        print("\n" + "="*70)
-        print("✅ 流水线执行完成！")
-        print("="*70)
-        print(f"总耗时: {format_time(total_time)}")
-        print(f"输出目录: {self.run_dir}")
-        print()
-        print("查看完整报告:")
-        print(f"  cat {self.run_dir}/run_summary.md")
-        print()
+        summary_content = f"""[bold green]流水线执行完成！[/bold green]
+
+[bold]总耗时[/bold]: {format_time(total_time)}
+[bold]输出目录[/bold]: {self.run_dir}
+
+[bold cyan]查看完整报告:[/bold cyan]
+  cat {self.run_dir}/run_summary.md
+"""
         if (self.run_dir / 'metrics' / 'test_metrics.json').exists():
-            print("查看评估指标:")
-            print(f"  cat {self.run_dir}/metrics/test_metrics.json")
-        print("="*70 + "\n")
+            summary_content += f"""
+[bold cyan]查看评估指标:[/bold cyan]
+  cat {self.run_dir}/metrics/test_metrics.json
+"""
+
+        print_panel(summary_content, title="执行总结", style="green")
+        logger.success("流水线执行完成", total_time=format_time(total_time), output_dir=str(self.run_dir))
 
 
 def parse_args():
@@ -753,9 +825,9 @@ def parse_args():
                         help='数据加载线程数')
 
     # 数据相关
-    parser.add_argument('--train-data', type=str, default='data/input/data1226',
+    parser.add_argument('--train-data', type=str, default='data/input',
                         help='训练数据路径')
-    parser.add_argument('--test-images', type=str, default='data/test_images',
+    parser.add_argument('--test-images', type=str, default='data/test_images2',
                         help='测试图片路径')
     parser.add_argument('--img-size', type=int, default=224,
                         help='输入图像尺寸')
@@ -763,7 +835,7 @@ def parse_args():
                         help='强制重新划分数据集')
 
     # 导出相关
-    parser.add_argument('--export-formats', type=str, default='onnx coreml',
+    parser.add_argument('--export-formats', type=str, default='onnx tflite',
                         help='导出格式（空格分隔）')
     parser.add_argument('--quantize', action='store_true',
                         help='量化模型')
